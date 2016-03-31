@@ -1,0 +1,113 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title Class Rosters
+    meta(name='description', content='My Parse App')
+    meta(name='viewport', content='width=device-width')
+    link(rel='stylesheet', href='css/bootstrap.min.css')
+    link(rel='stylesheet', href='css/rosters.css')
+    link(rel='icon', type='image/ico', href='favicon.ico')
+  body
+    body
+      nav.navbar.navbar-inverse.navbar-fixed-top
+        .container
+          .navbar-header
+            button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar', aria-expanded='false', aria-controls='navbar')
+              span.sr-only Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand(href='pdf/Cerebellum_UserGuide_Final.pdf', target='_blank') Help
+          #navbar.navbar-collapse.collapse
+            ul.nav.navbar-nav.navbar-right
+              li
+                a(href='scheduling') Scheduling
+              li.active
+                a(href='rosters') Rosters
+              li
+                a(href='classes') Classes
+              form.navbar-form.navbar-right.signOutForm
+                button.btn.btn-link.signOut(type='submit') Sign out
+          #navbar.navbar-collapse.collapse
+          // /.navbar-collapse
+      // Main jumbotron for a primary marketing message or call to action
+      .container
+        .residentsScheduling
+          .residentsList
+            .list-group-item
+              .displayText
+                a.addUserLink(data-toggle='modal', data-target='#myModal')
+                  span.glyphicon.glyphicon-plus(aria-hidden='true')
+                #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+                    .modal-dialog
+                      .modal-content
+                        .modal-header
+                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          h4#myModalLabel.modal-title Add a New Class
+                        .modal-body
+                          .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
+                            button.close(type='button', data-dismiss='alert', aria-label='Close')
+                              span(aria-hidden='true') ×
+                            strong Oh No!&nbsp;
+                            | The roster could not be added. Enter a name for each class
+                          form
+                            .form-group
+                              label(for='name') Name
+                              input#name.form-control(type='text', placeholder='Enter Name')
+                            br
+                            //
+                              <div class="form-group">
+                              <label for="contactPicture">Resident Contact Picture</label>
+                              <input type="file" id="contactPicture">
+                              <p class="help-block">Upload a jpg file of the resident.</p>
+                              </div>
+                              <div id="imagePreview"></div>
+                        .modal-footer
+                          button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
+                          button.btn.btn-primary.userButton.clearModalButton(type='button') Add Class
+                  .form-group.horizontalFix
+                    input#search.form-control(type='text', name='search', placeholder='Search', data-list='.list-group')
+            .list-group
+          .residentsSchedule
+            ul.nav.nav-tabs
+              li.tabs.active(role='presentation')
+                a(href='#') Monday
+              li.tabs(role='presentation')
+                a(href='#') Tuesday
+              li.tabs(role='presentation')
+                a(href='#') Wednesday
+              li.tabs(role='presentation')
+                a(href='#') Thursday
+              li.tabs(role='presentation')
+                a(href='#') Friday
+            h3.classTitle Class Roster - CLASS NAME - DAY AND TIME
+            // <h4>Instructor: PERSON</h4>
+            br
+            table#rosters.table.tableFix
+              thead
+                tr
+                  th Participant
+                  th
+                  th Participant
+                  th
+              tbody
+              tfoot
+                th
+                th
+                th
+                th
+                  button.btn.btn-primary.btn-sm.exportSchedule(type='button', data-html2canvas-ignore='true') Export
+      //
+        Bootstrap core JavaScript==================================================- ->
+        <!-- Placed at the end of the document so the pages load faster
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+      | >
+      script(src='js/bootstrap.min.js')
+      script(src='js/jquery.hideseek.min.js')
+      script(src='js/jquery-ui.min.js')
+      script(src='js/jquery.hideseek.min.js')
+      script(src='/socket.io/socket.io.js')
+      script(src='js/rosters.js')
+

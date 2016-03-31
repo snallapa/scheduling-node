@@ -1,0 +1,23 @@
+
+.residents-name {
+	text-align: center;
+}
+
+.table {
+	width: 80%;
+	height: 95%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 30px;
+}
+
+.times {
+	height: 75px;
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.times .clearable {
+	display: table-cell;
+	vertical-align: middle;
+}
