@@ -24,6 +24,10 @@ body {
 	top: 10px;
 }
 
+#rosters{
+	width: 90%;
+}
+
 .names {
 	height: 75px;
 }
@@ -31,6 +35,11 @@ body {
 td {
 	display: table-cell;
 	vertical-align: middle;
+	width: 30%;
+}
+
+.exportSchedule {
+	float: right;
 }
 
 .th-fix {
@@ -112,4 +121,8 @@ td {
 	float: left;
 	margin-bottom: 0px;
 	margin-right: 0px;
+}
+
+.form-control{
+	font-weight: normal;
 }

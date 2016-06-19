@@ -16,12 +16,7 @@ router.get('/', function(req, res, next) {
 //get for scheduling page
 router.get('/scheduling', function(req, res, next) {
 	if (req.user) {
-		Participant.find({}, function(err, participants) {
-			if (err) {
-				res.status(500).send('Could not get Participants');
-			}
-			res.render('scheduling', {participants: participants});
-		});
+		res.render('scheduling');
 		
 	} else {
 		res.redirect('/');
@@ -31,13 +26,7 @@ router.get('/scheduling', function(req, res, next) {
 
 router.get('/rosters', function(req, res, next) {
 	if (req.user) {
-		ClassRoster.find({}, function(err, classrosters) {
-			if (err) {
-				res.status(500).send('Could not get Rosters');
-			}
-			res.render('rosters', {classrosters: classrosters});
-		});
-		
+		res.render('rosters');		
 	} else {
 		res.redirect('/');
 	}
@@ -50,7 +39,14 @@ router.get('/classes', function(req, res, next) {
 	} else {
 		res.redirect('/');
 	}
-	
+});
+
+router.get('/export', function(req, res, next) {
+	if (req.user) {
+		res.render('export');
+	} else {
+		res.redirect('/');
+	}
 });
 
 router.get('/logout', function(req, res) {

@@ -10,7 +10,7 @@ $(document).ready( function () {
 		alert(error);
 	});
 
-	socket.on('classrosterlist', function(classes) {
+	socket.on('classlist', function(classes) {
 		userclasses = classes;
 		loadClasses(userclasses);
 	})
@@ -94,7 +94,7 @@ $(document).ready( function () {
 function loadClasses(classes) {
 	$("#classes").find("tr:gt(0)").remove();
 	for (var i = 0; i < classes.length; i++) {
-		$('#classes> tbody:last-child').append('<tr><td>' + classes[i].name+ '</td><td>' + classes[i].num + '</td><td><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></tr>');
+		$('#classes> tbody:last-child').append('<tr><td>' + classes[i].name+ '</td><td><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></tr>');
 	}
 	
 }

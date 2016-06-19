@@ -38,16 +38,16 @@ html
             span(aria-hidden='true') ×
           strong Success!
           |  The participant was deleted.
-        .alert.alert-success.alert-dismissible.savedSchedule(role='alert')
+        .alert.alert-warning.alert-dismissible.addClassWarning(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') ×
-          strong Success!
-          |  The schedule was saved.
-        .alert.alert-danger.alert-dismissible.scheduleNotSaved(role='alert')
-          button.close(type='button', data-dismiss='alert', aria-label='Close')
-            span(aria-hidden='true') ×
-          strong Oh No!
-          |  The schedule was not saved.
+          p
+            strong Wait!
+            |  The class entered is not part of the class list. Would you like to add it?
+          p
+            button.btn.btn-primary.addClass(type='button') Add Class
+            &nbsp;
+            button.btn.btn-default.closeWarning(type='button') Cancel
         .alert.alert-danger.alert-dismissible.residentNotDeleted(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') ×

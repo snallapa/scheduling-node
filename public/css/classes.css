@@ -10,7 +10,6 @@ td {
 	overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 18%;
     font-size: 16px;
 }
 
@@ -44,4 +43,8 @@ span {
 	float: left;
 	padding-right: 2%;
 	width: 25%;
+}
+
+.column {
+	width: 80%;
 }

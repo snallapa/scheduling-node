@@ -7,6 +7,7 @@ html
     meta(name='viewport', content='width=device-width')
     link(rel='stylesheet', href='css/bootstrap.min.css')
     link(rel='stylesheet', href='css/rosters.css')
+    link(rel='stylesheet', href='css/jquery-ui.min.css')
     link(rel='icon', type='image/ico', href='favicon.ico')
   body
     body
@@ -34,6 +35,16 @@ html
       // Main jumbotron for a primary marketing message or call to action
       .container
         .residentsScheduling
+          .alert.alert-warning.alert-dismissible.addParticipantWarning(role='alert')
+            button.close(type='button', data-dismiss='alert', aria-label='Close')
+              span(aria-hidden='true') ×
+            p
+              strong Wait!
+              |  The name entered is not a Participant. Would you like to add it?
+            p
+              button.btn.btn-primary.addParticipant(type='button') Add Participant
+              &nbsp;
+              button.btn.btn-default.closeWarning(type='button') Cancel
           .residentsList
             .list-group-item
               .displayText
@@ -66,7 +77,7 @@ html
                               <div id="imagePreview"></div>
                         .modal-footer
                           button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                          button.btn.btn-primary.userButton.clearModalButton(type='button') Add Class
+                          button.btn.btn-primary.classButton.clearModalButton(type='button') Add Class
                   .form-group.horizontalFix
                     input#search.form-control(type='text', name='search', placeholder='Search', data-list='.list-group')
             .list-group
@@ -82,32 +93,60 @@ html
                 a(href='#') Thursday
               li.tabs(role='presentation')
                 a(href='#') Friday
-            h3.classTitle Class Roster - CLASS NAME - DAY AND TIME
+            h3.classTitle
             // <h4>Instructor: PERSON</h4>
             br
             table#rosters.table.tableFix
               thead
                 tr
                   th Participant
-                  th
                   th Participant
-                  th
               tbody
               tfoot
                 th
+                  button.btn.btn-warning.btn-sm.addRow(type='button') Add Row
                 th
-                th
-                th
-                  button.btn.btn-primary.btn-sm.exportSchedule(type='button', data-html2canvas-ignore='true') Export
+                  button.btn.btn-primary.btn-sm.exportSchedule(type='button') Export
+                  button.btn.btn-info.btn-sm(type='button' data-toggle='modal', data-target='#locationModal') Edit Location
+                #locationModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+                  .modal-dialog
+                    .modal-content
+                      .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                          span(aria-hidden='true') ×
+                        h4#myModalLabel.modal-title Edit Location
+                      .modal-body
+                        .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
+                          button.close(type='button', data-dismiss='alert', aria-label='Close')
+                            span(aria-hidden='true') ×
+                          strong Oh No!&nbsp;
+                          | The location could not be edited. Enter a correct location
+                        form#locationform(data-dismiss='modal')
+                          .form-group
+                            label(for='location') Location
+                            input#location.form-control(type='text', placeholder='Enter Location')
+                            label(for='max') Max Participants
+                            input#max.form-control(type='text', placeholder='Enter Max Number of Participants')
+                          br
+                          //
+                            <div class="form-group">
+                            <label for="contactPicture">Resident Contact Picture</label>
+                            <input type="file" id="contactPicture">
+                            <p class="help-block">Upload a jpg file of the resident.</p>
+                            </div>
+                            <div id="imagePreview"></div>
+                      .modal-footer
+                        button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
+                        button.btn.btn-primary.locationButton.clearModalButton(type='button', data-dismiss='modal') Edit Location
+                  
       //
         Bootstrap core JavaScript==================================================- ->
         <!-- Placed at the end of the document so the pages load faster
-      script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
-      | >
-      script(src='js/bootstrap.min.js')
-      script(src='js/jquery.hideseek.min.js')
-      script(src='js/jquery-ui.min.js')
-      script(src='js/jquery.hideseek.min.js')
-      script(src='/socket.io/socket.io.js')
-      script(src='js/rosters.js')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+    script(src='js/bootstrap.min.js')
+    script(src='js/jquery-ui.min.js')
+    script(src='js/editableTable.js', type='text/javascript')
+    script(src='js/jquery.hideseek.min.js')
+    script(src='/socket.io/socket.io.js')
+    script(src='js/rosters.js')
 
