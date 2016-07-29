@@ -27,12 +27,16 @@ $(document).ready( function () {
 	});
 
 	$('#editModal').on('shown.bs.modal', function () {
-		$('#newName').focus();
-		$("#newName").val($('#classes tr').eq(index+1).find('td').eq(0).text());
+		$('#editNewName').focus();
+		$("#editNewName").val($('#classes tr').eq(index+1).find('td').eq(0).text());
+		$("#editLocation").val($('#classes tr').eq(index+1).find('td').eq(1).text());
+		$("#editMax").val($('#classes tr').eq(index+1).find('td').eq(2).text());
 	});
 
 	$(".editClassButton").click(function () {
-		var newName = $("#newName").val();
+		var newName = $("#editNewName").val();
+		var newLocation = $("#editLocation").val();
+		var newMax = $("#editMax").val();
 		if (newName === "") {
 			$(".residentNotEdited").slideDown().delay(3000)
 			.slideUp();
@@ -45,7 +49,7 @@ $(document).ready( function () {
 					break;
 				}
 			}
-			socket.emit('edit class', {id:userclasses[index]._id, newName:newName});
+			socket.emit('edit class', {id:userclasses[index]._id, newName:newName, newLocation: newLocation, newMax: newMax});
 			$("#newName").val("");
 			$('#editModal').modal('hide');
 			$("#search").val("");
@@ -53,27 +57,30 @@ $(document).ready( function () {
 	});
 
 	$('#myModal').on('shown.bs.modal', function () {
-		$('#name').focus();
+		$('#newName').focus();
 	});
 
 	$(document).keypress(function (e) {
 		if (e.which == 13) {
 			e.preventDefault();
 			if(($("#myModal").data('bs.modal') || {}).isShown) {
-				$(".userButton").trigger("click");
+				$(".addClassButton").trigger("click");
 			} else if (($("#editModal").data('bs.modal') || {}).isShown) {
 				$(".editClassButton").trigger("click");	
 			}
 		}
 	});
 
-	$(".userButton").click(function () {
-		var name = $("#name").val();
-		if (name === "") {
-			$(".participantNotAdded").slideDown().delay(3000)
+	$(".addClassButton").click(function () {
+		var name = $("#newName").val().trim();
+		var location = $("#location").val().trim();
+		var max = parseInt($("#max").val().trim());
+		if (name === "" || location === "" || isNaN(max)) {
+			$(".classNotAdded").slideDown().delay(3000)
 			.slideUp();
 		} else {
-			socket.emit('new class', {name: name});
+			max = parseInt(max);
+			socket.emit('new class', {name: name, location : location, max : max});
 			$("#name").val("");
 			$('#myModal').modal('hide');
 			$("#search").val("");
@@ -94,7 +101,8 @@ $(document).ready( function () {
 function loadClasses(classes) {
 	$("#classes").find("tr:gt(0)").remove();
 	for (var i = 0; i < classes.length; i++) {
-		$('#classes> tbody:last-child').append('<tr><td>' + classes[i].name+ '</td><td><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></tr>');
+
+		$('#classes> tbody:last-child').append('<tr><td>' + classes[i].name+ '</td><td>' + classes[i].location + '</td><td>' + classes[i].maxNumber + '</td><td><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></tr>');
 	}
 	
 }

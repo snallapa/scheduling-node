@@ -45,9 +45,41 @@ html
             strong Wait!
             |  The class entered is not part of the class list. Would you like to add it?
           p
-            button.btn.btn-primary.addClass(type='button') Add Class
-            &nbsp;
+            button.btn.btn-primary(type='button' data-toggle='modal', data-target='#addClass') Add Class
             button.btn.btn-default.closeWarning(type='button') Cancel
+            #addClass.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                      span(aria-hidden='true') ×
+                    h4#myModalLabel.modal-title Add a New Class
+                  .modal-body
+                    .alert.alert-danger.alert-dismissible.classNotAdded(role='alert')
+                      button.close(type='button', data-dismiss='alert', aria-label='Close')
+                        span(aria-hidden='true') ×
+                      strong Oh No!&nbsp;
+                      | The roster could not be added. Enter a name for each class
+                    form
+                      .form-group
+                        label(for='newName') New Name
+                        input#newName.form-control(type='text', placeholder='')
+                        label(for='location') Location
+                        input#location.form-control(type='text', placeholder='')
+                        label(for='max') Max
+                        input#max.form-control(type='text', placeholder='')
+                      //br
+                      //
+                        <div class="form-group">
+                        <label for="contactPicture">Resident Contact Picture</label>
+                        <input type="file" id="contactPicture">
+                        <p class="help-block">Upload a jpg file of the resident.</p>
+                        </div>
+                        <div id="imagePreview"></div>
+                  .modal-footer
+                    button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
+            
         .alert.alert-danger.alert-dismissible.residentNotDeleted(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') ×

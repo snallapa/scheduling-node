@@ -34,7 +34,7 @@ $(document).ready( function () {
 		classrosterlist = rosterUserList;
 		$( "textarea" ).not("#search").autocomplete({
 			source: classrosterlist.map(function(roster){
-				return roster.name;
+				return {value:roster.name + "\n" + roster.location, label:roster.name + "\n" + roster.location + ": " + roster.maxNumber};
 			})
 		});
 	});
@@ -204,10 +204,26 @@ $(document).ready( function () {
 		};
 	});
 
+	$('#addClass').on('shown.bs.modal', function () {
+		$('#newName').focus();
+		$('#newName').val(classNameSaving);
+	});
+
 	//Adding a class if user enters a class not added yet
-	$(".addClass").click(function() {
-		socket.emit('new class', {name: classNameSaving});
-		$('.addClassWarning').slideUp();
+	$(".addClassButton").click(function () {
+		var name = $("#newName").val().trim();
+		var location = $("#location").val().trim();
+		var max = parseInt($("#max").val().trim());
+		if (name === "" || location === "" || isNaN(max)) {
+			$(".classNotAdded").slideDown().delay(3000)
+			.slideUp();
+		} else {
+			max = parseInt(max);
+			socket.emit('new class', {name: name, location : location, max : max});
+			$("#name").val("");
+			$('#addClass').modal('hide');
+			$("#search").val("");
+		}
 	});
 
 	//search html way for list
@@ -263,8 +279,8 @@ function loadSchedule(schedule) {
 				if(event.startTime === time[0] && event.day === day) {
 					//null check on classrosterid can be null if class is deleted or just not filled
 					if (event.classrosterId) {
-						if(event.location) {
-							$(tableRows[j]).find('td:eq(' + i + ')').html(event.classrosterId.name + "\n" + event.location);
+						if(event.classrosterId.location) {
+							$(tableRows[j]).find('td:eq(' + i + ')').html(event.classrosterId.name + "\n" + event.classrosterId.location);
 						} else {
 							$(tableRows[j]).find('td:eq(' + i + ')').html(event.classrosterId.name);
 						}
@@ -280,7 +296,8 @@ function savedSchedule(cell) {
 	var col = cell.parent().children().index(cell);
 	var row = cell.parent().parent().children().index(cell.parent());
 	var tableRows = $("#schedule").find('tbody').find('tr');
-	var className = $(tableRows[row]).find('td:eq(' + col + ')').html();
+	var className = $(tableRows[row]).find('td:eq(' + col + ')').html() + "";
+	className = className.split("\n");
 	var time = $(tableRows[row]).find('td:eq(0)').html();
 	time = time.split("-");
 	time[0] = time[0].trim();
@@ -288,7 +305,8 @@ function savedSchedule(cell) {
 	var day = $('th:eq(' + col + ')').html();
 	var classid;
 
-	if (className.trim() === "") {
+
+	if (className[0].trim() === "") {
 		for (var i = 0; i < classrosterlist.length; i++) {
 			if (classrosterlist[i].nameLower === classToDelete.toLowerCase()) {
 				classid = classrosterlist[i]._id;
@@ -301,7 +319,7 @@ function savedSchedule(cell) {
 		socket.emit('delete schedule', {participantid: id, classEvent: classEvent});
 	} else {
 		for (var i = 0; i < classrosterlist.length; i++) {
-			if (classrosterlist[i].nameLower === className.toLowerCase()) {
+			if (classrosterlist[i].nameLower === className[0].toLowerCase() && classrosterlist[i].locationLower === className[1].toLowerCase()) {
 				classid = classrosterlist[i]._id;
 				break;
 			}

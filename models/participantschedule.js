@@ -6,9 +6,7 @@ var ParticipantSchedule = new Schema({
 	day: Number,
 	startTime: String,
 	endTime: String,
-	classrosterId: {type:Schema.Types.ObjectId, ref:'ClassRoster'},
-	location: String,
-	max: Number
+	classrosterId: {type:Schema.Types.ObjectId, ref:'ClassRoster'}
 });
 
 

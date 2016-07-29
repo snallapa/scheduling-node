@@ -107,37 +107,6 @@ html
                   button.btn.btn-warning.btn-sm.addRow(type='button') Add Row
                 th
                   button.btn.btn-primary.btn-sm.exportSchedule(type='button') Export
-                  button.btn.btn-info.btn-sm(type='button' data-toggle='modal', data-target='#locationModal') Edit Location
-                #locationModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
-                  .modal-dialog
-                    .modal-content
-                      .modal-header
-                        button.close(type='button', data-dismiss='modal', aria-label='Close')
-                          span(aria-hidden='true') ×
-                        h4#myModalLabel.modal-title Edit Location
-                      .modal-body
-                        .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
-                          button.close(type='button', data-dismiss='alert', aria-label='Close')
-                            span(aria-hidden='true') ×
-                          strong Oh No!&nbsp;
-                          | The location could not be edited. Enter a correct location
-                        form#locationform(data-dismiss='modal')
-                          .form-group
-                            label(for='location') Location
-                            input#location.form-control(type='text', placeholder='Enter Location')
-                            label(for='max') Max Participants
-                            input#max.form-control(type='text', placeholder='Enter Max Number of Participants')
-                          br
-                          //
-                            <div class="form-group">
-                            <label for="contactPicture">Resident Contact Picture</label>
-                            <input type="file" id="contactPicture">
-                            <p class="help-block">Upload a jpg file of the resident.</p>
-                            </div>
-                            <div id="imagePreview"></div>
-                      .modal-footer
-                        button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                        button.btn.btn-primary.locationButton.clearModalButton(type='button', data-dismiss='modal') Edit Location
                   
       //
         Bootstrap core JavaScript==================================================- ->

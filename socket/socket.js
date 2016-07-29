@@ -35,12 +35,31 @@ module.exports = function(server){
     //save schedule
     socket.on('save schedule', function(participant) {
       var classEvent = participant.classEvent;
-      ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(participant.participantid), day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
+      ClassRoster.findById(classEvent.classrosterid, function(err, classroster) {
         if (err) {
-          socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
+          socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
+        } else {
+          max = classroster.maxNumber;
+          ParticipantSchedule.find({day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime, classrosterId:new ObjectId(classEvent.classrosterid)}).count(function(err, count) {
+            if (err) {
+              socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
+            } else {
+              if (count < max) {
+                ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(participant.participantid), day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
+                  if (err) {
+                    socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
+                  }
+                  io.emit('schedule change', participant.participantid);
+                });
+              } else {
+                socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
+
+              }
+            }
+          });
         }
-        io.emit('schedule change', participant.participantid);
       });
+
     });
 
     //delete a class from a schedule
@@ -68,14 +87,31 @@ module.exports = function(server){
     //save roster
     socket.on('save roster', function(roster) {
       var classEvent = roster.classEvent;
-      console.log(roster);
-      var newParticipantSchedule = new ParticipantSchedule({participantId: new ObjectId(roster.participantid), classrosterId:new ObjectId(classEvent.classrosterid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime});
-      newParticipantSchedule.save(function (err) {
+      ClassRoster.findById(classEvent.classrosterid, function(err, classroster) {
         if (err) {
-          console.log(err);
-          socket.emit("errorMessage", "Could not add to roster. Try Refreshing. Error Message: " + err.errmsg);
+          socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
+        } else {
+          max = classroster.maxNumber;
+          ParticipantSchedule.find({day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime, classrosterId:new ObjectId(classEvent.classrosterid)}).count(function(err, count) {
+            if (err) {
+              socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
+            } else {
+              if (count < max) {
+                var newParticipantSchedule = new ParticipantSchedule({participantId: new ObjectId(roster.participantid), classrosterId:new ObjectId(classEvent.classrosterid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime});
+                newParticipantSchedule.save(function (err) {
+                  if (err) {
+                    console.log(err);
+                    socket.emit("errorMessage", "Could not add to roster. Try Refreshing. Error Message: " + err.errmsg);
+                  }
+                  io.emit('schedule change', roster.participantid);
+                });
+              } else {
+                socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
+
+              }
+            }
+          });
         }
-        io.emit('schedule change', roster.participantid);
       });
     });
 
@@ -107,9 +143,9 @@ module.exports = function(server){
 
     //add new class
     socket.on('new class', function(event) {
-      ClassRoster.create({ name: event.name,nameLower:event.name.toLowerCase()}, function (err) {
+      ClassRoster.create({ name: event.name, nameLower:event.name.toLowerCase(), location: event.location, locationLower: event.location.toLowerCase(), maxNumber: event.max}, function (err) {
         if (err) {
-          socket.emit("errorMessage", "Could not edit Participant. Try Refreshing Error Message: " + err.errmsg);
+          socket.emit("errorMessage", "Could not add Class (possible duplicate?). Try Refreshing Error Message: " + err.errmsg);
         }
         emitUpdatedRostersToAll();
       });
@@ -153,7 +189,7 @@ module.exports = function(server){
 
     //edit a class 
     socket.on('edit class', function(eventClass) {
-      ClassRoster.findByIdAndUpdate(eventClass.id, { name: eventClass.newName, nameLower: eventClass.newName.toLowerCase()}, function (err) {
+      ClassRoster.findByIdAndUpdate(eventClass.id, { name: eventClass.newName, nameLower: eventClass.newName.toLowerCase(), location:eventClass.newLocation, locationLower:eventClass.newLocation.toLowerCase(), maxNumber:eventClass.newMax}, function (err) {
         if (err) {
           socket.emit("errorMessage", "Could not edit class name. Try Refreshing Error Message: " + err.errmsg);
         }
@@ -175,16 +211,6 @@ module.exports = function(server){
           }
           socket.emit('rosterlist', rosters);
         });
-      });
-    });
-
-    //edit the location of classes
-    socket.on('edit location', function(roster) {
-      ParticipantSchedule.update({classrosterId:roster.classrosterid, startTime: roster.startTime, endTime: roster.endTime, day:roster.day}, {location: roster.location}, {multi: true}, function(err) {
-        if (err) {
-          socket.emit("errorMessage", "Could not save location. Try Refreshing Error Message: " + err.errmsg);
-        }
-        io.emit('schedule change', roster.participantid);
       });
     });
 
