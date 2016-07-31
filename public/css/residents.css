@@ -1,6 +1,6 @@
 body {
 	max-height: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 table {
 	table-layout: fixed;

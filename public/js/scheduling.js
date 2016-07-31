@@ -34,6 +34,9 @@ $(document).ready( function () {
 		classrosterlist = rosterUserList;
 		$( "textarea" ).not("#search").autocomplete({
 			source: classrosterlist.map(function(roster){
+				if (!roster.maxNumber) {
+					roster.maxNumber = "No Max";
+				}
 				return {value:roster.name + "\n" + roster.location, label:roster.name + "\n" + roster.location + ": " + roster.maxNumber};
 			})
 		});
@@ -80,7 +83,7 @@ $(document).ready( function () {
 	//show and fill edit modal
 	$("div").on('click', ".editParticipant", function (event) {
 		event.stopImmediatePropagation();
-		$("#newName").val($("#participantChosen").text());
+		$("#newParticipantName").val($("#participantChosen").text());
 		$('#editModal').modal();
 	});
 
@@ -89,19 +92,19 @@ $(document).ready( function () {
 		$('#name').focus();
 	});
 	$('#editModal').on('shown.bs.modal', function () {
-		$('#newName').focus();
+		$('#newParticipantName').focus();
 	});
 
 	//submitting and sending information from modal
 	$(".editUserButton").click(function () {
-		var newName = $("#newName").val();
+		var newName = $("#newParticipantName").val();
 		if (newName === "") {
 			$(".residentNotEdited").slideDown().delay(3000)
 			.slideUp();
 		}
 		else {
 			socket.emit('edit participant', {name: $("#participantChosen > .participantName").html(), newName:newName});
-			$("#newName").val("");
+			$("#newParticipantName").val("");
 			$('#editModal').modal('hide');
 			$("#search").val("");
 		}
@@ -209,20 +212,27 @@ $(document).ready( function () {
 		$('#newName').val(classNameSaving);
 	});
 
+	$('.clearModalButton').click(function() {
+		$('.addClassWarning').slideUp();
+	});
+
 	//Adding a class if user enters a class not added yet
 	$(".addClassButton").click(function () {
 		var name = $("#newName").val().trim();
 		var location = $("#location").val().trim();
-		var max = parseInt($("#max").val().trim());
-		if (name === "" || location === "" || isNaN(max)) {
+		var max = $("#max").val().trim();
+		if (name === "" || (max != '' && isNaN(parseInt(max)))) {
 			$(".classNotAdded").slideDown().delay(3000)
 			.slideUp();
 		} else {
 			max = parseInt(max);
 			socket.emit('new class', {name: name, location : location, max : max});
 			$("#name").val("");
+			$("#location").val("");
+			$("#max").val("");
 			$('#addClass').modal('hide');
 			$("#search").val("");
+			$('.addClassWarning').slideUp();
 		}
 	});
 
@@ -297,7 +307,7 @@ function savedSchedule(cell) {
 	var row = cell.parent().parent().children().index(cell.parent());
 	var tableRows = $("#schedule").find('tbody').find('tr');
 	var className = $(tableRows[row]).find('td:eq(' + col + ')').html() + "";
-	className = className.split("\n");
+	className = decodeEntity(className).split("\n");
 	var time = $(tableRows[row]).find('td:eq(0)').html();
 	time = time.split("-");
 	time[0] = time[0].trim();
@@ -350,5 +360,9 @@ function getNumberFromDay(day) {
 	} else if (day.toLowerCase() === "friday") {
 		return 4;
 	}
+}
+
+function decodeEntity(className) {
+	return $('<textarea />').html(className).text();
 }
 

@@ -1,4 +1,6 @@
-
+body {
+	overflow: hidden;
+}
 .residents-name {
 	text-align: center;
 }

@@ -50,7 +50,9 @@ $(document).ready( function () {
 				}
 			}
 			socket.emit('edit class', {id:userclasses[index]._id, newName:newName, newLocation: newLocation, newMax: newMax});
-			$("#newName").val("");
+			$("#editNewName").val("");
+			$("#editLocation").val("");
+			$("#editMax").val("");
 			$('#editModal').modal('hide');
 			$("#search").val("");
 		}
@@ -74,14 +76,16 @@ $(document).ready( function () {
 	$(".addClassButton").click(function () {
 		var name = $("#newName").val().trim();
 		var location = $("#location").val().trim();
-		var max = parseInt($("#max").val().trim());
-		if (name === "" || location === "" || isNaN(max)) {
+		var max = $("#max").val().trim();
+		if (name === "" || (max != '' && isNaN(parseInt(max)))) {
 			$(".classNotAdded").slideDown().delay(3000)
 			.slideUp();
 		} else {
 			max = parseInt(max);
 			socket.emit('new class', {name: name, location : location, max : max});
-			$("#name").val("");
+			$("#newName").val("");
+			$("#location").val("");
+			$("#max").val("");
 			$('#myModal').modal('hide');
 			$("#search").val("");
 		}
@@ -101,7 +105,9 @@ $(document).ready( function () {
 function loadClasses(classes) {
 	$("#classes").find("tr:gt(0)").remove();
 	for (var i = 0; i < classes.length; i++) {
-
+		if (!classes[i].maxNumber) {
+			classes[i].maxNumber = "";
+		}
 		$('#classes> tbody:last-child').append('<tr><td>' + classes[i].name+ '</td><td>' + classes[i].location + '</td><td>' + classes[i].maxNumber + '</td><td><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></tr>');
 	}
 	

@@ -109,14 +109,21 @@ $(document).ready( function () {
 
 	//adding a class 
 	$(".classButton").click(function () {
-		var name = $("#name").val();
-		if (name === "") {
-			$(".participantNotAdded").slideDown().delay(3000)
+		var name = $("#name").val().trim();
+		var location = $("#location").val().trim();
+		var max = $("#max").val().trim();
+		if (name === "" || (max != '' && isNaN(parseInt(max)))) {
+			$(".classNotAdded").slideDown().delay(3000)
 			.slideUp();
 		} else {
-			socket.emit('new class', {name: name});
+			max = parseInt(max);
+			socket.emit('new class', {name: name, location : location, max : max});
 			$("#name").val("");
+			$("#location").val("");
+			$("#max").val("");
 			$('#myModal').modal('hide');
+			$("#search").val("");
+			$('.addClassWarning').slideUp();
 		}
 	});
 
@@ -160,7 +167,10 @@ $(document).ready( function () {
 		indexOfList = $(this).index();
 		$(".itemData:eq(" + indexOfList + ")").addClass("active");
 		$(".itemData:eq(" + indexOfList + ")").attr("id", "classChosen");
-		$(".classTitle").html(rosterslist[indexOfList].classrosterId.name + " - " + dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1) + " " + rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime);
+		if (!rosterslist[indexOfList].classrosterId.maxNumber) {
+			rosterslist[indexOfList].classrosterId.maxNumber = "No"
+		}
+		$(".classTitle").html(rosterslist[indexOfList].classrosterId.name + " - " + rosterslist[indexOfList].classrosterId.location + " - " + dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1) + " " + rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime + " : " + rosterslist[indexOfList].classrosterId.maxNumber + " max");
 		socket.emit('get rosterparticipants', rosterslist[indexOfList]);
 	});
 

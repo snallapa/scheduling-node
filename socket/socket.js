@@ -44,7 +44,7 @@ module.exports = function(server){
             if (err) {
               socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
             } else {
-              if (count < max) {
+              if (!max || count < max) {
                 ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(participant.participantid), day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
@@ -96,14 +96,16 @@ module.exports = function(server){
             if (err) {
               socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
             } else {
-              if (count < max) {
-                var newParticipantSchedule = new ParticipantSchedule({participantId: new ObjectId(roster.participantid), classrosterId:new ObjectId(classEvent.classrosterid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime});
-                newParticipantSchedule.save(function (err) {
-                  if (err) {
-                    console.log(err);
-                    socket.emit("errorMessage", "Could not add to roster. Try Refreshing. Error Message: " + err.errmsg);
+              if (!max || count < max) {
+                ParticipantSchedule.findOne({participantId: new ObjectId(roster.participantid), classrosterId:new ObjectId(classEvent.classrosterid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, function(err, participant) {
+                  if (err || !participant) {
+                    ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(roster.participantid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
+                      if (err) {
+                        socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
+                      }
+                      io.emit('schedule change', roster.participantid);
+                    });
                   }
-                  io.emit('schedule change', roster.participantid);
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
@@ -205,7 +207,7 @@ module.exports = function(server){
         if (err) {
           socket.emit("errorMessage", "Could not get roster list. Try Refreshing Error Message: " + err.errmsg);
         }
-        ParticipantSchedule.populate(rosters, {path: 'classrosterId'}, function(err, rosters) {
+        ParticipantSchedule.populate(rosters, {path: 'classrosterId', options:{sort:{nameLower: -1, startTime:-1}}}, function(err, rosters) {
           if (err) {
             socket.emit("errorMessage", "Could not get roster list. Try Refreshing Error Message: " + err.errmsg);
           }
