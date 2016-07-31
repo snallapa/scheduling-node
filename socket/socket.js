@@ -97,15 +97,11 @@ module.exports = function(server){
               socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
             } else {
               if (!max || count < max) {
-                ParticipantSchedule.findOne({participantId: new ObjectId(roster.participantid), classrosterId:new ObjectId(classEvent.classrosterid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, function(err, participant) {
-                  if (err || !participant) {
-                    ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(roster.participantid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
-                      if (err) {
-                        socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
-                      }
-                      io.emit('schedule change', roster.participantid);
-                    });
+                ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(roster.participantid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
+                  if (err) {
+                    socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
+                  io.emit('schedule change', roster.participantid);
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
