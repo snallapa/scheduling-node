@@ -8,6 +8,15 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	/*
+	User.register(new User({username: "sevenhills"}), "sevenhills", function(err) {
+		if (err) {
+			console.log('error while user register!', err);
+			return next(err);
+		}
+
+		console.log('user registered!');
+	});*/
 	res.render('index');
 });
 
@@ -54,40 +63,10 @@ router.get('/logout', function(req, res) {
 	res.redirect('/');
 });
 
-router.get('/participants', function(req, res) {
-
-});
 /* All Posts */
-
-/*
-router.post('/register', function(req, res) {
-    User.register(new User({ username : req.body.username }), req.body.password, function(err, account) {
-    	console.log(req.body.username);
-        if (err) {
-            return res.render('/');
-        }
-
-        passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
-        });
-    });
-});
-*/
 
 router.post('/login', passport.authenticate('local', {successRedirect:'scheduling', failureRedirect:'/'}), function(req, res, next) {
 });
-
-/*
-router.post('/scheduling', function(req,res){
-	var newParticipant = new Participant({name:req.body.name});
-	newParticipant.save(function (err) {
-		if (err) {
-			res.status(500).send({error: "Participant could not be added"});
-		}
-		res.status(200).end();
-	})
-});
-*/
 
 
 module.exports = router;
