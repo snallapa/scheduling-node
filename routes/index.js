@@ -9,7 +9,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	/*
-	User.register(new User({username: "sevenhills"}), "sevenhills", function(err) {
+	User.register(new User({username: "username"}), "password", function(err) {
 		if (err) {
 			console.log('error while user register!', err);
 			return next(err);
