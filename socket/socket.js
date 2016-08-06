@@ -59,7 +59,6 @@ module.exports = function(server){
           });
         }
       });
-
     });
 
     //delete a class from a schedule
@@ -150,7 +149,7 @@ module.exports = function(server){
     });
 
     //return schedule of participant
-    socket.on('getSchedule', function(participantId) {
+    socket.on('get schedule', function(participantId) {
       ParticipantSchedule.find({participantId:new ObjectId(participantId)}).populate('classrosterId').exec(function (err, schedule) {
         if (err) {
           socket.emit("errorMessage", "Could not get schedule for this participant. Try Refreshing Error Message: " + err.errmsg);

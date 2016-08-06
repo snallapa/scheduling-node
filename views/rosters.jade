@@ -48,24 +48,24 @@ html
           .residentsList
             .list-group-item
               .displayText
-                a.addUserLink(data-toggle='modal', data-target='#myModal')
+                a.addUserLink(data-toggle='modal', data-target='#addClassModal')
                   span.glyphicon.glyphicon-plus(aria-hidden='true')
-                #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+                #addClassModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='classLabel', aria-hidden='true')
                     .modal-dialog
                       .modal-content
                         .modal-header
                           button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                          h4#myModalLabel.modal-title Add a New Class
+                          h4#classLabel.modal-title Add a New Class
                         .modal-body
                           .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
                             button.close(type='button', data-dismiss='alert', aria-label='Close')
                               span(aria-hidden='true') ×
                             strong Oh No!&nbsp;
-                            | The roster could not be added. Enter a name for each class
+                            | The class could not be added. Enter a name/number for each field
                           form
                             .form-group
-                              label(for='newName') New Name
+                              label(for='name') Name
                               input#name.form-control(type='text', placeholder='')
                               label(for='location') Location
                               input#location.form-control(type='text', placeholder='')
@@ -81,7 +81,7 @@ html
                               <div id="imagePreview"></div>
                         .modal-footer
                           button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                          button.btn.btn-primary.classButton.clearModalButton(type='button') Add Class
+                          button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
                   .form-group.horizontalFix
                     input#search.form-control(type='text', name='search', placeholder='Search', data-list='.list-group')
             .list-group

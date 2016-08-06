@@ -6,39 +6,46 @@ $(document).ready( function () {
 
 	socket = io();
 
+	//for any error messages server sends us
 	socket.on("errorMessage", function(error){
 		alert(error);
 	});
 
+	//the class list
 	socket.on('classlist', function(classes) {
 		userclasses = classes;
 		loadClasses(userclasses);
 	})
 
+	//show warning when the remove is clicked
 	$("div").on('click', ".glyphicon-remove", function (event) {
 		index = $('#classes tr').index($(event.target).parent().parent()) - 1;
 		event.stopImmediatePropagation();
 		$(".classesWarning").slideDown();
 	});
+
+	//show modal when the edit class is clicked
 	$("div").on('click', ".glyphicon-pencil", function (event) {
 		index = $('#classes tr').index($(event.target).parent().parent()) - 1;
 		event.stopImmediatePropagation();
-		$('#editModal').modal();
+		$('#editClassModal').modal();
 	});
 
-	$('#editModal').on('shown.bs.modal', function () {
+	//fill the modal with the relevant information
+	$('#editClassModal').on('shown.bs.modal', function () {
 		$('#editNewName').focus();
 		$("#editNewName").val($('#classes tr').eq(index+1).find('td').eq(0).text());
 		$("#editLocation").val($('#classes tr').eq(index+1).find('td').eq(1).text());
 		$("#editMax").val($('#classes tr').eq(index+1).find('td').eq(2).text());
 	});
 
+	//send message to server when we want to save
 	$(".editClassButton").click(function () {
 		var newName = $("#editNewName").val();
 		var newLocation = $("#editLocation").val();
 		var newMax = $("#editMax").val();
 		if (newName === "") {
-			$(".residentNotEdited").slideDown().delay(3000)
+			$(".classNotEdited").slideDown().delay(3000)
 			.slideUp();
 		}
 		else {
@@ -53,28 +60,31 @@ $(document).ready( function () {
 			$("#editNewName").val("");
 			$("#editLocation").val("");
 			$("#editMax").val("");
-			$('#editModal').modal('hide');
+			$('#editClassModal').modal('hide');
 			$("#search").val("");
 		}
 	});
 
-	$('#myModal').on('shown.bs.modal', function () {
+	//add focus on the first field
+	$('#addClassModal').on('shown.bs.modal', function () {
 		$('#newName').focus();
 	});
 
+	//account for enter button
 	$(document).keypress(function (e) {
 		if (e.which == 13) {
 			e.preventDefault();
-			if(($("#myModal").data('bs.modal') || {}).isShown) {
+			if(($("#addClassModal").data('bs.modal') || {}).isShown) {
 				$(".addClassButton").trigger("click");
-			} else if (($("#editModal").data('bs.modal') || {}).isShown) {
+			} else if (($("#editClassModal").data('bs.modal') || {}).isShown) {
 				$(".editClassButton").trigger("click");	
 			}
 		}
 	});
 
+	//create a new class
 	$(".addClassButton").click(function () {
-		var name = $("#newName").val().trim();
+		var name = $("#name").val().trim();
 		var location = $("#location").val().trim();
 		var max = $("#max").val().trim();
 		if (name === "" || (max != '' && isNaN(parseInt(max)))) {
@@ -83,25 +93,31 @@ $(document).ready( function () {
 		} else {
 			max = parseInt(max);
 			socket.emit('new class', {name: name, location : location, max : max});
-			$("#newName").val("");
+			$("#name").val("");
 			$("#location").val("");
 			$("#max").val("");
-			$('#myModal').modal('hide');
+			$('#addClassModal').modal('hide');
 			$("#search").val("");
 		}
 	});
 
+	//remove the class
 	$(".actuallyRemoveClass").click( function () {
 		$(".alert").slideUp();
 		socket.emit('remove class', {id: userclasses[index]._id});
+		$('#search').val("");
 	});
 
+	//slide up the warnings
 	$(".closeWarning").click(function () {
 		$(".alert").slideUp();
 	});
+
+	//search html way
 	$('#search').hideseek();
 });
 
+//add the classes
 function loadClasses(classes) {
 	$("#classes").find("tr:gt(0)").remove();
 	for (var i = 0; i < classes.length; i++) {

@@ -62,25 +62,16 @@ $(document).ready( function () {
 	//enter submits modal forms
 	$(document).keypress(function (e) {
 		if (e.which == 13) {
-			console.log('here');
 			e.preventDefault();
-			if(($("#myModal").data('bs.modal') || {}).isShown) {
-				$(".classButton").trigger("click");
-			} else if (($("#locationModal").data('bs.modal') || {}).isShown) {
-				$(".locationButton").trigger("click");	
-			}
+			if(($("#addClassModal").data('bs.modal') || {}).isShown) {
+				$(".addClassButton").trigger("click");
+			} 
 		}
 	});
 
 	//focus on the right fields
-	$('#myModal').on('shown.bs.modal', function () {
+	$('#addClassModal').on('shown.bs.modal', function () {
 		$('#name').focus();
-	});
-
-	$('#locationModal').on('shown.bs.modal', function () {
-		$('#location').focus();
-		$("#location").val(rosterslist[indexOfList].location);
-		$("#max").val(rosterslist[indexOfList].max);
 	});
 
 	//when right tabs are clicked change the day correctly
@@ -108,7 +99,7 @@ $(document).ready( function () {
 	$('#search').hideseek();
 
 	//adding a class 
-	$(".classButton").click(function () {
+	$(".addClassButton").click(function () {
 		var name = $("#name").val().trim();
 		var location = $("#location").val().trim();
 		var max = $("#max").val().trim();
@@ -121,30 +112,9 @@ $(document).ready( function () {
 			$("#name").val("");
 			$("#location").val("");
 			$("#max").val("");
-			$('#myModal').modal('hide');
+			$('#addClassModal').modal('hide');
 			$("#search").val("");
 			$('.addClassWarning').slideUp();
-		}
-	});
-
-	//Editing Location
-	$(".locationButton").click(function () {
-		var location = $("#location").val().trim();
-		var max = $("#max").val().trim();
-		if (location.trim() === "" || (isNaN(max) && max !== "")) {
-			$(".locationNotAdded").slideDown().delay(3000)
-			.slideUp();
-		} else {
-			var className = rosterslist[indexOfList].classrosterId.name;
-			var time = [];
-			time[0] = rosterslist[indexOfList].startTime;
-			time[1] = rosterslist[indexOfList].endTime;
-			var id = rosterslist[indexOfList]._id.classrosterId;
-			max = parseInt(max);
-			socket.emit('edit location', {max: max, location: location, classrosterid: id, startTime: time[0], endTime: time[1], day: currentday});
-			$("#location").val("");
-			$("#max").val("");
-			$('#locationModal').modal('hide');
 		}
 	});
 

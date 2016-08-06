@@ -30,14 +30,16 @@ $(document).ready( function () {
 	});
 
 	//list of classes for auto complete
-	socket.on("classlist", function(rosterUserList){
-		classrosterlist = rosterUserList;
+	socket.on("classlist", function(classList){
+		classrosterlist = classList;
 		$( "textarea" ).not("#search").autocomplete({
 			source: classrosterlist.map(function(roster){
 				if (!roster.maxNumber) {
 					roster.maxNumber = "No Max";
 				}
-				return {value:roster.name + "\n" + roster.location, label:roster.name + "\n" + roster.location + ": " + roster.maxNumber};
+				value = roster.name + "\n" + roster.location;
+				label = roster.name + "\n" + roster.location + ": " + roster.maxNumber;
+				return {value: value, label: label};
 			})
 		});
 	});
@@ -45,11 +47,11 @@ $(document).ready( function () {
 	//if another user changed the current users schedule
 	socket.on('schedule change', function(participantId) {
 		if (userlist[indexOfList]._id === participantId) {
-			socket.emit('getSchedule', userlist[indexOfList]._id);
+			socket.emit('get schedule', userlist[indexOfList]._id);
 		}
 	});
 
-	//when the schedule is recieved load it
+	//when the schedule is received load it
 	socket.on("participant schedule", function(schedule) {
 		loadSchedule(schedule);
 	});
@@ -77,7 +79,7 @@ $(document).ready( function () {
 		indexOfList = $(this).index();
 		$(".itemData:eq(" + indexOfList + ")").addClass("active");
 		$(".itemData:eq(" + indexOfList + ")").attr("id", "participantChosen");
-		socket.emit('getSchedule', userlist[indexOfList]._id);
+		socket.emit('get schedule', userlist[indexOfList]._id);
 	});
 
 	//show and fill edit modal
@@ -88,7 +90,7 @@ $(document).ready( function () {
 	});
 
 	//focus on the right text field when modals come up
-	$('#myModal').on('shown.bs.modal', function () {
+	$('#newParticipantModal').on('shown.bs.modal', function () {
 		$('#name').focus();
 	});
 	$('#editModal').on('shown.bs.modal', function () {
@@ -96,7 +98,7 @@ $(document).ready( function () {
 	});
 
 	//submitting and sending information from modal
-	$(".editUserButton").click(function () {
+	$(".editParticipantButton").click(function () {
 		var newName = $("#newParticipantName").val();
 		if (newName === "") {
 			$(".residentNotEdited").slideDown().delay(3000)
@@ -114,16 +116,16 @@ $(document).ready( function () {
 	$(document).keypress(function (e) {
 		if (e.which == 13) {
 			e.preventDefault();
-			if(($("#myModal").data('bs.modal') || {}).isShown) {
-				$(".userButton").trigger("click");
+			if(($("#newParticipantModal").data('bs.modal') || {}).isShown) {
+				$(".addParticipantButton").trigger("click");
 			} else if (($("#editModal").data('bs.modal') || {}).isShown) {
-				$(".editUserButton").trigger("click");	
+				$(".editParticipantButton").trigger("click");	
 			}
 		}
 	});
 
 	//add new user
-	$(".userButton").click(function () {
+	$(".addParticipantButton").click(function () {
 		var name = $("#name").val();
 		if (name === "") {
 			$(".participantNotAdded").slideDown().delay(3000)
@@ -131,7 +133,7 @@ $(document).ready( function () {
 		} else {
 			socket.emit('new participant', {name: name});
 			$("#name").val("");
-			$('#myModal').modal('hide');
+			$('#newParticipantModal').modal('hide');
 			$("#search").val("");
 		}
 	});
@@ -156,7 +158,6 @@ $(document).ready( function () {
 	//Removing Resident
 	$("div").on('click', ".removeParticipant", function (event) {
 		event.stopImmediatePropagation();
-		console.log("removeResident");
 		$(".residentWarning").slideDown();
 	});
 
@@ -175,7 +176,7 @@ $(document).ready( function () {
 		cloneProperties: ['background', 'border', 'outline']
 	});
 
-	//validating name just no long names 
+	//validating name just no long names also save names that should be deleted
 	$('table td').on('validate', function (evt, newValue) {
 		var cell = $(this);
 		var column = cell.index();
@@ -315,7 +316,7 @@ function savedSchedule(cell) {
 	var day = $('th:eq(' + col + ')').html();
 	var classid;
 
-
+	//we need to delete the class
 	if (className[0].trim() === "") {
 		for (var i = 0; i < classrosterlist.length; i++) {
 			if (classrosterlist[i].nameLower === classToDelete.toLowerCase()) {
@@ -328,6 +329,7 @@ function savedSchedule(cell) {
 
 		socket.emit('delete schedule', {participantid: id, classEvent: classEvent});
 	} else {
+		//save the class or tell the user that they entered a wrong class
 		for (var i = 0; i < classrosterlist.length; i++) {
 			if (classrosterlist[i].nameLower === className[0].toLowerCase() && classrosterlist[i].locationLower === className[1].toLowerCase()) {
 				classid = classrosterlist[i]._id;
@@ -362,6 +364,7 @@ function getNumberFromDay(day) {
 	}
 }
 
+//helper function for html entities (&)
 function decodeEntity(className) {
 	return $('<textarea />').html(className).text();
 }

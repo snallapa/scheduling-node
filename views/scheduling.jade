@@ -47,13 +47,13 @@ html
           p
             button.btn.btn-primary(type='button' data-toggle='modal', data-target='#addClass') Add Class
             button.btn.btn-default.closeWarning(type='button') Cancel
-            #addClass.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+            #addClass.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addClassLabel', aria-hidden='true')
               .modal-dialog
                 .modal-content
                   .modal-header
                     button.close(type='button', data-dismiss='modal', aria-label='Close')
                       span(aria-hidden='true') ×
-                    h4#myModalLabel.modal-title Add a New Class
+                    h4#addClassLabel.modal-title Add a New Class
                   .modal-body
                     .alert.alert-danger.alert-dismissible.classNotAdded(role='alert')
                       button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -108,15 +108,15 @@ html
         .residentsList
           .list-group-item
             .displayText
-              a.addUserLink(data-toggle='modal', data-target='#myModal')
+              a.addUserLink(data-toggle='modal', data-target='#newParticipantModal')
                 span.glyphicon.glyphicon-plus(aria-hidden='true')
-              #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+              #newParticipantModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='newParticipantLabel', aria-hidden='true')
                 .modal-dialog
                   .modal-content
                     .modal-header
                       button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
-                      h4#myModalLabel.modal-title Add a New User
+                      h4#newParticipantLabel.modal-title Add a New User
                     .modal-body
                       .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
                         button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -137,7 +137,7 @@ html
                           <div id="imagePreview"></div>
                     .modal-footer
                       button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                      button.btn.btn-primary.userButton.clearModalButton(type='button') Add User
+                      button.btn.btn-primary.addParticipantButton.clearModalButton(type='button') Add User
               .form-group.horizontalFix
                 input#search.form-control(type='text', name='search', placeholder='Search', data-list='.list-group')
           .list-group
@@ -199,13 +199,13 @@ html
                 th
                   button.btn.btn-warning.btn-sm.clearSchedule(type='button', data-html2canvas-ignore='true') Clear Schedule
                 th.th-fix
-                  #editModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+                  #editModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editLabel', aria-hidden='true')
                     .modal-dialog
                       .modal-content
                         .modal-header
                           button.close(type='button', data-dismiss='modal', aria-label='Close')
                             span(aria-hidden='true') ×
-                          h4#myModalLabel.modal-title Edit User
+                          h4#editLabel.modal-title Edit User
                         .modal-body
                           .alert.alert-danger.alert-dismissible.residentNotEdited(role='alert')
                             button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -226,7 +226,7 @@ html
                               <div id="newimagePreview" class="imagePreview"></div>
                         .modal-footer
                           button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                          button.btn.btn-primary.editUserButton.clearModalButton(type='button') Edit User
+                          button.btn.btn-primary.editParticipantButton.clearModalButton(type='button') Edit User
                 th
                 th
                 th

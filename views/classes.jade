@@ -49,14 +49,14 @@ html
               form.search
                 .form-group
                   input#search.form-control(type='text', name='search', placeholder='Search', data-list='tbody')
-              button.btn.btn-primary(type='button' data-toggle='modal', data-target='#myModal') Add Class
-              #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+              button.btn.btn-primary(type='button' data-toggle='modal', data-target='#addClassModal') Add Class
+              #addClassModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addClassLabel', aria-hidden='true')
                 .modal-dialog
                   .modal-content
                     .modal-header
                       button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
-                      h4#myModalLabel.modal-title Add a New Class
+                      h4#addClassLabel.modal-title Add a New Class
                     .modal-body
                       .alert.alert-danger.alert-dismissible.classNotAdded(role='alert')
                         button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -65,8 +65,8 @@ html
                         | The class could not be added. Enter a name/number for each field
                       form
                         .form-group
-                          label(for='newName') New Name
-                          input#newName.form-control(type='text', placeholder='')
+                          label(for='name') Name
+                          input#name.form-control(type='text', placeholder='')
                           label(for='location') Location
                           input#location.form-control(type='text', placeholder='')
                           label(for='max') Max
@@ -82,15 +82,15 @@ html
                     .modal-footer
                       button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
                       button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
-              #editModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+              #editClassModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editClassLabel', aria-hidden='true')
                 .modal-dialog
                   .modal-content
                     .modal-header
                       button.close(type='button', data-dismiss='modal', aria-label='Close')
                         span(aria-hidden='true') ×
-                      h4#myModalLabel.modal-title Edit Class
+                      h4#editClassLabel.modal-title Edit Class
                     .modal-body
-                      .alert.alert-danger.alert-dismissible.residentNotEdited(role='alert')
+                      .alert.alert-danger.alert-dismissible.classNotEdited(role='alert')
                         button.close(type='button', data-dismiss='alert', aria-label='Close')
                           span(aria-hidden='true') ×
                         strong Oh No!&nbsp;
