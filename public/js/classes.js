@@ -103,7 +103,7 @@ $(document).ready( function () {
 
 	//remove the class
 	$(".actuallyRemoveClass").click( function () {
-		$(".alert").slideUp();
+		$(".deleteAlert").slideUp();
 		socket.emit('remove class', {id: userclasses[index]._id});
 		$('#search').val("");
 	});
@@ -115,6 +115,16 @@ $(document).ready( function () {
 
 	//search html way
 	$('#search').hideseek();
+
+	$(".deleteClassesButton").click(function () {
+		$(".deleteAllAlert").slideDown();
+	});
+
+	$(".actuallyClearClasses").click(function () {
+		socket.emit('clear classes');
+		$('#search').val("");
+		$(".alert").slideUp();
+	});
 });
 
 //add the classes

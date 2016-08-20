@@ -39,10 +39,15 @@ span {
 .headerbar {
 	display: block;
 }
+
 .search {
 	float: left;
 	padding-right: 2%;
 	width: 25%;
+}
+
+.addClassButtonModal {
+	margin-right: 2%;
 }
 
 .column {

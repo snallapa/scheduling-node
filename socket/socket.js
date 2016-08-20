@@ -3,13 +3,13 @@ var ParticipantSchedule = require('../models/participantschedule');
 var ClassRoster = require('../models/classroster');
 var ObjectId = require('mongoose').Types.ObjectId;
 var io;
-module.exports = function(server){
+module.exports = function(server) {
   io = require('socket.io')(server);
 
   // catch errors
-  io.on('error', function(err){
+  io.on('error', function(err) {
     throw err;
-  })
+  });
 
 
   io.on('connection', function (socket) {
@@ -221,6 +221,20 @@ module.exports = function(server){
       });
     });
 
+    socket.on('clear classes', function() {
+      ClassRoster.remove({}, function(err) {
+        if (err) {
+          socket.emit("errorMessage", "Could not delete all classes. Try Refreshing Error Message: " + err.errmsg);
+        }
+        ParticipantSchedule.remove({}, function(err) {
+          if (err) {
+            socket.emit("errorMessage", "Could not delete all classes. Try Refreshing Error Message: " + err.errmsg);
+          }
+          emitUpdatedUsersToAll();
+          emitUpdatedRostersToAll();
+        });
+      });
+    });
   });
 
   return io; // so it can be used in app.js ( if need be )
