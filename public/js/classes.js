@@ -67,7 +67,7 @@ $(document).ready( function () {
 
 	//add focus on the first field
 	$('#addClassModal').on('shown.bs.modal', function () {
-		$('#newName').focus();
+		$('#name').focus();
 	});
 
 	//account for enter button

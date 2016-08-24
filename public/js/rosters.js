@@ -138,9 +138,15 @@ $(document).ready( function () {
 		$(".itemData:eq(" + indexOfList + ")").addClass("active");
 		$(".itemData:eq(" + indexOfList + ")").attr("id", "classChosen");
 		if (!rosterslist[indexOfList].classrosterId.maxNumber) {
-			rosterslist[indexOfList].classrosterId.maxNumber = "No"
+			rosterslist[indexOfList].classrosterId.maxNumber = "&infin;"
 		}
-		$(".classTitle").html(rosterslist[indexOfList].classrosterId.name + " - " + rosterslist[indexOfList].classrosterId.location + " - " + dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1) + " " + rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime + " : " + rosterslist[indexOfList].classrosterId.maxNumber + " max");
+		var className = rosterslist[indexOfList].classrosterId.name;
+		var classLocation = rosterslist[indexOfList].classrosterId.location;
+		classLocation = classLocation == undefined || classLocation.trim() === "" ? "No Location" : classLocation;
+		var classDay = dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1);
+		var classTime = rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime;
+		var classMax = rosterslist[indexOfList].num + "/" + rosterslist[indexOfList].classrosterId.maxNumber;
+		$(".classTitle").html(className + " - " + classLocation + " - " + classDay + " " + classTime + " : " + classMax);
 		socket.emit('get rosterparticipants', rosterslist[indexOfList]);
 	});
 
