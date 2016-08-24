@@ -45,6 +45,16 @@ html
               button.btn.btn-primary.addParticipant(type='button') Add Participant
               &nbsp;
               button.btn.btn-default.closeWarning(type='button') Cancel
+          .alert.alert-danger.alert-dismissible.deleteRosterWarning(role='alert')
+            button.close(type='button', data-dismiss='alert', aria-label='Close')
+              span(aria-hidden='true') ×
+            p
+              strong Wait!
+              |  Would you like to delete all participants in this roster?
+            p
+              button.btn.btn-primary.deleteRoster(type='button') Delete Roster
+              &nbsp;
+              button.btn.btn-default.closeWarning(type='button') Cancel
           .residentsList
             .list-group-item
               .displayText

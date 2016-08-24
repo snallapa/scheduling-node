@@ -4,7 +4,7 @@ var rosterslist;
 var userlist = [];
 var dayNames = ["monday", "tuesday", "wednesday", "thursday", "friday"];
 var indexOfList;
-var LOCAL_STORAGE_STRING = "list_item_place";
+var LOCAL_STORAGE_STRING_ROSTER = "roster_list_item_place";
 var LOCAL_STORAGE_DATE = "day";
 var currentday;
 var nameToDelete;
@@ -17,7 +17,7 @@ $(document).ready( function () {
 	socket = io();
 
 	//socket messages for any errors from server
-	socket.on("errorMessage", function(error){
+	socket.on("errorMessage", function(error) {
 		alert(error);
 	});
 
@@ -43,16 +43,12 @@ $(document).ready( function () {
 		userlist = serverUserlist;
 	});
 
-	indexOfList = parseInt(localStorage.getItem(LOCAL_STORAGE_STRING));
+	indexOfList = parseInt(localStorage.getItem(LOCAL_STORAGE_STRING_ROSTER));
 	currentday = parseInt(localStorage.getItem(LOCAL_STORAGE_DATE));
 
-	//set the day to either today or last day the user was on
-	var actualDay = new Date().getDay() % 5;
-	if (currentday !== actualDay) {
-		indexOfList = 0;
-	}
 	if (currentday === null) {
-		currentday = actualDay;
+		currentday = 0;
+		indexOfList = 0;
 	}
 
 	if (indexOfList === null) {
@@ -82,18 +78,10 @@ $(document).ready( function () {
 		$(this).tab('show');
 		currentday = dayNames.indexOf($(event.target).text().toLowerCase());
 		socket.emit('get roster', currentday);
-		indexOfList = 0;
 	});
 
 	//start off clicking current day
 	$(".tabs a").eq(currentday).trigger("click");
-
-	//when closing save spot in lists
-	$(window).unload(function () {
-		localStorage.setItem(LOCAL_STORAGE_STRING, indexOfList.toString());
-		localStorage.setItem(LOCAL_STORAGE_DATE, currentday.toString());
-		return "Bye now!";
-	});
 
 	//initialize html search
 	$('#search').hideseek();
@@ -135,6 +123,7 @@ $(document).ready( function () {
 		$(".itemData:eq(" + indexOfList + ")").removeClass("active");
 		$(".itemData:eq(" + indexOfList + ")").removeAttr('id');
 		indexOfList = $(this).index();
+		saveLocalData();
 		$(".itemData:eq(" + indexOfList + ")").addClass("active");
 		$(".itemData:eq(" + indexOfList + ")").attr("id", "classChosen");
 		if (!rosterslist[indexOfList].classrosterId.maxNumber) {
@@ -142,7 +131,7 @@ $(document).ready( function () {
 		}
 		var className = rosterslist[indexOfList].classrosterId.name;
 		var classLocation = rosterslist[indexOfList].classrosterId.location;
-		classLocation = classLocation == undefined || classLocation.trim() === "" ? "No Location" : classLocation;
+		var classLocation = classLocation == undefined || classLocation.trim() === "" ? "No Location" : classLocation;
 		var classDay = dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1);
 		var classTime = rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime;
 		var classMax = rosterslist[indexOfList].num + "/" + rosterslist[indexOfList].classrosterId.maxNumber;
@@ -167,6 +156,19 @@ $(document).ready( function () {
 			exportWindow.document.getElementById('header').innerHTML = className;
 			exportWindow.document.getElementById('schedule').innerHTML = table;
 		};
+	});
+
+	//Removing Roster
+	$("div").on('click', ".removeRoster", function (event) {
+		event.stopImmediatePropagation();
+		$(".deleteRosterWarning").slideDown();
+	});
+
+	$(".deleteRoster").click(function() {
+		var currentRoster = rosterslist[indexOfList];
+		var message = {day:currentday, startTime:currentRoster.startTime, endTime:currentRoster.endTime, classrosterId:currentRoster._id.classrosterId};
+		socket.emit('clear roster', message);
+		$(".deleteRosterWarning").slideUp();
 	});
 
 });
@@ -200,14 +202,14 @@ function updateRosterList(rosters) {
 			$(".list-group").append('<div id="classChosen" class="list-group-item active itemData"></div>');
 			$(".itemData").last().append('<p class="className list-group-item-heading">' + currentClass.classrosterId.name + '</p>');
 			$(".itemData").last().append('<p class="classTime list-group-item-text">' + currentClass.startTime + ' - ' + currentClass.endTime + '</p>');
-			$(".itemData").last().append('<a title="Remove Class" class="removeClass list-item-inline "><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>');
+			$(".itemData").last().append('<a title="Remove Class" class="removeRoster list-item-inline "><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>');
 			indexOfList = i;
 		}
 		else {
 			$(".list-group").append('<div class="list-group-item itemData"></div>');
 			$(".itemData").last().append('<p class="list-item-inline className">' + currentClass.classrosterId.name + '</p>');
 			$(".itemData").last().append('<p class="classTime list-item-inline">' + currentClass.startTime + ' - ' + currentClass.endTime + '</p>');
-			$(".itemData").last().append('<a title="Remove Class" class="removeClass list-item-inline"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>');
+			$(".itemData").last().append('<a title="Remove Class" class="removeRoster list-item-inline"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>');
 		}
 	}
 	if (indexOfList == -1) {
@@ -306,6 +308,10 @@ function savedRosters(cell) {
 		classEvent = {day: currentday, startTime: time[0], endTime:time[1],classrosterid:rosterslist[indexOfList]._id.classrosterId};
 		socket.emit('save roster', {participantid: participantid, classEvent: classEvent});
 	}
-	
+}
+
+function saveLocalData() {
+	localStorage.setItem(LOCAL_STORAGE_STRING_ROSTER, indexOfList.toString());
+	localStorage.setItem(LOCAL_STORAGE_DATE, currentday.toString());
 }
 

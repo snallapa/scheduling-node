@@ -49,7 +49,7 @@ module.exports = function(server) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
-                  io.emit('schedule change', participant.participantid);
+                  io.emit('schedule change', {participantId:participant.participantid, forceUpdate:false});
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
@@ -68,7 +68,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', participant.participantid);
+        io.emit('schedule change', {participantId:participant.participantid, forceUpdate:false});
       });
     });
 
@@ -79,7 +79,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', roster.participantid);
+        io.emit('schedule change', {participantId:roster.participantid, forceUpdate:false});
       });
     });
 
@@ -100,11 +100,10 @@ module.exports = function(server) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
-                  io.emit('schedule change', roster.participantid);
+                  io.emit('schedule change', {participantId:roster.participantid, forceUpdate:false});
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
-
               }
             }
           });
@@ -119,6 +118,7 @@ module.exports = function(server) {
           socket.emit("errorMessage", "Could not edit Participant. Try Refreshing Error Message: " + err.errmsg);
         }
         emitUpdatedUsersToAll();
+        io.emit('schedule change', {participantId:undefined, forceUpdate:false});
       });
     });
 
@@ -134,6 +134,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove Participant. Try Refreshing Error Message: " + err.errmsg);
         }
+        io.emit('schedule change', {participantId:undefined, forceUpdate:false});
         emitUpdatedRostersToAll();
       });
     });
@@ -164,7 +165,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', participantId);
+        io.emit('schedule change', {participantId:participantId, forceUpdate:false});
       });
     });
 
@@ -180,6 +181,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
         }
+        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
         emitUpdatedUsersToAll();
       });
     });
@@ -192,6 +194,7 @@ module.exports = function(server) {
         }
         emitUpdatedUsersToAll();
         emitUpdatedRostersToAll();
+        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
       });
     });
 
@@ -221,6 +224,7 @@ module.exports = function(server) {
       });
     });
 
+    //delete all classes
     socket.on('clear classes', function() {
       ClassRoster.remove({}, function(err) {
         if (err) {
@@ -232,7 +236,19 @@ module.exports = function(server) {
           }
           emitUpdatedUsersToAll();
           emitUpdatedRostersToAll();
+          io.emit('schedule change', {participantId:undefined, forceUpdate:true});
         });
+      });
+    });
+
+    socket.on('clear roster', function(roster) {
+      console.log(roster);
+      ParticipantSchedule.remove({day: roster.day, startTime: roster.startTime, endTime: roster.endTime, classrosterId:new ObjectId(roster.classrosterId)}, function(err) {
+        if (err) {
+          socket.emit("errorMessage", "Could not delete roster. Try Refreshing Error Message: " + err.errmsg);
+        }
+        emitUpdatedRostersToAll();
+        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
       });
     });
   });

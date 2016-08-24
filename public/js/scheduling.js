@@ -45,8 +45,10 @@ $(document).ready( function () {
 	});
 
 	//if another user changed the current users schedule
-	socket.on('schedule change', function(participantId) {
-		if (userlist[indexOfList]._id === participantId) {
+	socket.on('schedule change', function(returnMessage) {
+		var participantId = returnMessage.participantId;
+		var forceUpdate = returnMessage.forceUpdate;
+		if (forceUpdate || userlist[indexOfList]._id === participantId) {
 			socket.emit('get schedule', userlist[indexOfList]._id);
 		}
 	});
@@ -66,17 +68,12 @@ $(document).ready( function () {
 		indexOfList = 0;
 	}
 
-	//save the index of list when tab closes
-	$(window).unload(function () {
-		localStorage.setItem(LOCAL_STORAGE_STRING, indexOfList.toString());
-		return "Bye now!";
-	});
-
 	//clicked inside of participant list
 	$("div").on("click",".itemData", function (event) {
 		$(".itemData:eq(" + indexOfList + ")").removeClass("active");
 		$(".itemData:eq(" + indexOfList + ")").removeAttr('id');
 		indexOfList = $(this).index();
+		saveLocalData();
 		$(".itemData:eq(" + indexOfList + ")").addClass("active");
 		$(".itemData:eq(" + indexOfList + ")").attr("id", "participantChosen");
 		socket.emit('get schedule', userlist[indexOfList]._id);
@@ -367,5 +364,9 @@ function getNumberFromDay(day) {
 //helper function for html entities (&)
 function decodeEntity(className) {
 	return $('<textarea />').html(className).text();
+}
+
+function saveLocalData() {
+	localStorage.setItem(LOCAL_STORAGE_STRING, indexOfList.toString());
 }
 
