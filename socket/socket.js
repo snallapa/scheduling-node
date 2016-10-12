@@ -49,7 +49,7 @@ module.exports = function(server) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
-                  io.emit('schedule change', {participantId:participant.participantid, forceUpdate:false});
+                  io.emit('schedule change', {Id:participant.participantid, forceUpdate:false});
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
@@ -68,7 +68,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', {participantId:participant.participantid, forceUpdate:false});
+        io.emit('schedule change', {Id:participant.participantid, forceUpdate:false});
       });
     });
 
@@ -79,7 +79,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', {participantId:roster.participantid, forceUpdate:false});
+        io.emit('schedule change', {Id:roster.participantid, forceUpdate:false});
       });
     });
 
@@ -100,7 +100,7 @@ module.exports = function(server) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
-                  io.emit('schedule change', {participantId:roster.participantid, forceUpdate:false});
+                  io.emit('schedule change', {Id:classEvent.classrosterid, forceUpdate:false});
                 });
               } else {
                 socket.emit("errorMessage", "Reached class limit either remove a person or raise limit");
@@ -118,7 +118,7 @@ module.exports = function(server) {
           socket.emit("errorMessage", "Could not edit Participant. Try Refreshing Error Message: " + err.errmsg);
         }
         emitUpdatedUsersToAll();
-        io.emit('schedule change', {participantId:undefined, forceUpdate:false});
+        io.emit('schedule change', {Id:undefined, forceUpdate:false});
       });
     });
 
@@ -134,7 +134,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove Participant. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', {participantId:undefined, forceUpdate:false});
+        io.emit('schedule change', {Id:undefined, forceUpdate:false});
         emitUpdatedRostersToAll();
       });
     });
@@ -165,7 +165,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', {participantId:participantId, forceUpdate:false});
+        io.emit('schedule change', {Id:participantId, forceUpdate:false});
       });
     });
 
@@ -181,7 +181,7 @@ module.exports = function(server) {
         if (err) {
           socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
         }
-        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
+        io.emit('schedule change', {Id:undefined, forceUpdate:true});
         emitUpdatedUsersToAll();
       });
     });
@@ -194,7 +194,7 @@ module.exports = function(server) {
         }
         emitUpdatedUsersToAll();
         emitUpdatedRostersToAll();
-        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
+        io.emit('schedule change', {Id:undefined, forceUpdate:true});
       });
     });
 
@@ -236,7 +236,7 @@ module.exports = function(server) {
           }
           emitUpdatedUsersToAll();
           emitUpdatedRostersToAll();
-          io.emit('schedule change', {participantId:undefined, forceUpdate:true});
+          io.emit('schedule change', {Id:undefined, forceUpdate:true});
         });
       });
     });
@@ -248,7 +248,7 @@ module.exports = function(server) {
           socket.emit("errorMessage", "Could not delete roster. Try Refreshing Error Message: " + err.errmsg);
         }
         emitUpdatedRostersToAll();
-        io.emit('schedule change', {participantId:undefined, forceUpdate:true});
+        io.emit('schedule change', {Id:undefined, forceUpdate:true});
       });
     });
   });

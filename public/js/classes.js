@@ -21,7 +21,7 @@ $(document).ready( function () {
 	$("div").on('click', ".glyphicon-remove", function (event) {
 		index = $('#classes tr').index($(event.target).parent().parent()) - 1;
 		event.stopImmediatePropagation();
-		$(".classesWarning").slideDown();
+		$(".deleteAlert").slideDown();
 	});
 
 	//show modal when the edit class is clicked
@@ -50,8 +50,12 @@ $(document).ready( function () {
 		}
 		else {
 			var name = $('#classes tr').eq(index+1).find('td').eq(0).text();
+			var location = $('#classes tr').eq(index+1).find('td').eq(1).text();
+			var max = $('#classes tr').eq(index+1).find('td').eq(2).text();
 			for (var i = 0; i < userclasses.length; i++) {
-				if (userclasses[i].nameLower === name.toLowerCase()) {
+				if (userclasses[i].nameLower === name.toLowerCase() 
+					&& userclasses[i].location == location.toLowerCase()
+					&& userclasses[i].maxNumber == max) {
 					index = i;
 					break;
 				}

@@ -46,7 +46,7 @@ $(document).ready( function () {
 
 	//if another user changed the current users schedule
 	socket.on('schedule change', function(returnMessage) {
-		var participantId = returnMessage.participantId;
+		var participantId = returnMessage.Id;
 		var forceUpdate = returnMessage.forceUpdate;
 		if (forceUpdate || userlist[indexOfList]._id === participantId) {
 			socket.emit('get schedule', userlist[indexOfList]._id);

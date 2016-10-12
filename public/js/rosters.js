@@ -135,6 +135,9 @@ $(document).ready( function () {
 		var classDay = dayNames[currentday].substring(0,1).toUpperCase() + dayNames[currentday].substring(1);
 		var classTime = rosterslist[indexOfList].startTime + "-" + rosterslist[indexOfList].endTime;
 		var classMax = rosterslist[indexOfList].num + "/" + rosterslist[indexOfList].classrosterId.maxNumber;
+		if (rosterslist[indexOfList].num >= rosterslist[indexOfList].classrosterId.maxNumber) {
+			classMax = "<font color='red'>" + classMax + "</font>";
+		}
 		$(".classTitle").html(className + " - " + classLocation + " - " + classDay + " " + classTime + " : " + classMax);
 		socket.emit('get rosterparticipants', rosterslist[indexOfList]);
 	});
