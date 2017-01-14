@@ -1,6 +1,7 @@
 /// <reference path="../../typings/jquery/jquery.d.ts"/>
 var userlist = [];
 var classrosterlist = [];
+var savedSchedule =[[],[],[],[],[],[],];
 //please do not change in js (supposed to be final)
 var LOCAL_STORAGE_STRING = "list_item_place";
 var LIST_THRESHOLD_VALUE = 8;
@@ -10,6 +11,7 @@ var indexOfList;
 var socket;
 var classNameSaving;
 var classToDelete;
+var skipSave = false;
 
 $(document).ready( function () {
 
@@ -17,7 +19,7 @@ $(document).ready( function () {
 	socket = io();
 
 	//show error messages from server
-	socket.on("errorMessage", function(error){
+	socket.on("errorMessage", function(error) {
 		alert(error);
 	});
 
@@ -34,12 +36,9 @@ $(document).ready( function () {
 		classrosterlist = classList;
 		$( "textarea" ).not("#search").autocomplete({
 			source: classrosterlist.map(function(roster){
-				if (!roster.maxNumber) {
-					roster.maxNumber = "No Max";
-				}
-				value = roster.name + "\n" + roster.location;
-				label = roster.name + "\n" + roster.location + ": " + roster.maxNumber;
-				return {value: value, label: label};
+				label = roster.name + "\n" + roster.location + ": ";
+				label = !roster.maxNumber ? label + "No Max" : roster.maxNumber;
+				return {value: label, label: label};
 			})
 		});
 	});
@@ -176,11 +175,12 @@ $(document).ready( function () {
 	//validating name just no long names also save names that should be deleted
 	$('table td').on('validate', function (evt, newValue) {
 		var cell = $(this);
-		var column = cell.index();
-		if (column === 0) {
+		var col = cell.parent().children().index(cell);
+		var row = cell.parent().parent().children().index(cell.parent());
+		if (col === 0) {
 			return false;
 		} if (newValue.trim() === "") {
-			classToDelete = cell.html(); 
+			classToDelete = savedSchedule[row][col]; 
 		}
 		else {
 			return newValue.trim().length < 65;
@@ -189,7 +189,26 @@ $(document).ready( function () {
 
 	//when it actually gets entered save the schedule
 	$('table td').on('change', function (evt, newValue) {
-		savedSchedule($(this));
+		var cell = $(this);
+		var tableRows = $("#schedule").find('tbody').find('tr');
+		var col = cell.parent().children().index(cell);
+		var row = cell.parent().parent().children().index(cell.parent());
+		var wholeName = $(tableRows[row]).find('td:eq(' + col + ')').html() + "";
+		savedSchedule[row][col] = wholeName;
+		var className = wholeName.substring(0,wholeName.indexOf(":")).trim();
+		var maxNumber = wholeName.substring(wholeName.indexOf(":") + 1).trim();
+		maxNumber = parseInt(maxNumber);
+		if (!Number.isInteger(maxNumber)) {
+			maxNumber = null;
+		}
+		$(tableRows[row]).find('td:eq(' + col + ')').html(className)
+		if (!skipSave) {
+			saveSchedule($(this), className, maxNumber);
+			skipSave = true;
+		} else {
+			skipSave = false;
+		}
+
 	});
 
 	//export functionality
@@ -272,11 +291,11 @@ function loadSchedule(schedule) {
 	var tableRows = $("#schedule").find('tbody').find('tr');
 	$('.clearable').html("");
 
-	for (var i = 1; i < MAX_ROWS;i++) {
+	for (var i = 1; i < MAX_COLUMNS;i++) {
 		// start at 1 so dont get time column
 		var day = getNumberFromDay($('th:eq(' + i + ')').html().toLowerCase());
 
-		for(var j = 0; j < MAX_COLUMNS;j++) {
+		for(var j = 0; j < MAX_ROWS;j++) {
 
 			var time = $(tableRows[j]).find('td:eq(0)').html();
 			time = time.split("-");
@@ -292,6 +311,7 @@ function loadSchedule(schedule) {
 						} else {
 							$(tableRows[j]).find('td:eq(' + i + ')').html(event.classrosterId.name);
 						}
+						savedSchedule[j][i] = event.classrosterId.name + "\n" + event.classrosterId.location + ": " + event.classrosterId.maxNumber;
 					}
 				}
 			}
@@ -300,12 +320,12 @@ function loadSchedule(schedule) {
 }
 
 //when a  new schedule is entered save it by saving the specific cell value
-function savedSchedule(cell) {
+function saveSchedule(cell, className, maxNumber) {
 	var col = cell.parent().children().index(cell);
 	var row = cell.parent().parent().children().index(cell.parent());
 	var tableRows = $("#schedule").find('tbody').find('tr');
-	var className = $(tableRows[row]).find('td:eq(' + col + ')').html() + "";
-	className = decodeEntity(className).split("\n");
+	className = decodeEntity(className.toLowerCase()).split("\n");
+	className[1] = className[1] === undefined ? "" : className[1];
 	var time = $(tableRows[row]).find('td:eq(0)').html();
 	time = time.split("-");
 	time[0] = time[0].trim();
@@ -315,8 +335,19 @@ function savedSchedule(cell) {
 
 	//we need to delete the class
 	if (className[0].trim() === "") {
+		var classDeleteName = classToDelete.toLowerCase().substring(0,classToDelete.indexOf(":")).trim();
+		classDeleteName = decodeEntity(classDeleteName).split("\n");
+		classDeleteName[1] = classDeleteName[1] === undefined ? "" : classDeleteName[1];
+		var deleteMaxNumber = classToDelete.substring(classToDelete.indexOf(":") + 1).trim();
+		var deleteMaxNumber = parseInt(deleteMaxNumber);
+		if (!Number.isInteger(deleteMaxNumber)) {
+			deleteMaxNumber = null;
+		}
 		for (var i = 0; i < classrosterlist.length; i++) {
-			if (classrosterlist[i].nameLower === classToDelete.toLowerCase()) {
+
+			if (classrosterlist[i].nameLower === classDeleteName[0] 
+				&& classrosterlist[i].locationLower === classDeleteName[1]
+				&& deleteMaxNumber === classrosterlist[i].maxNumber) {
 				classid = classrosterlist[i]._id;
 				break;
 			}
@@ -328,7 +359,9 @@ function savedSchedule(cell) {
 	} else {
 		//save the class or tell the user that they entered a wrong class
 		for (var i = 0; i < classrosterlist.length; i++) {
-			if (classrosterlist[i].nameLower === className[0].toLowerCase() && classrosterlist[i].locationLower === className[1].toLowerCase()) {
+			if (classrosterlist[i].nameLower === className[0]
+				&& classrosterlist[i].locationLower === className[1]
+				&& maxNumber === classrosterlist[i].maxNumber) {
 				classid = classrosterlist[i]._id;
 				break;
 			}
