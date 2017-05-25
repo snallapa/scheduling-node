@@ -79,9 +79,7 @@ var SocketModel = (function () {
 		socket.on('schedule change', function(returnMessage) {
 			var participantId = returnMessage.Id;
 			var forceUpdate = returnMessage.forceUpdate;
-			if (forceUpdate || controller.currentParticipant === participantId) {
-				socket.emit('get schedule', userlist[indexOfList]._id);
-			}
+			controller.scheduleChange(forceUpdate, participantId);
 		});
 
 		socket.on("participant schedule", function(schedule) {

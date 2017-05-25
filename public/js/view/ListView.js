@@ -1,9 +1,10 @@
 var ListView = (function () {
-
 	var emitter;
 	var userlist;
 	var currentSpot;
 	var LOCAL_STORAGE_STRING = "list_item_place";
+	var LOCAL_STORAGE_ID = "list_item_id";
+	var listChangeObservers;
 
 	function CurrentSpot (index, participant) {
 		this.index = index;
@@ -12,6 +13,7 @@ var ListView = (function () {
 
 	function init(initEmitter) {
 		emitter = initEmitter;
+		listChangeObservers = [];
 		getSavedIndex();
 		bind();
 		setupSearch();
@@ -27,6 +29,11 @@ var ListView = (function () {
 
 	function saveLocalData() {
 		localStorage.setItem(LOCAL_STORAGE_STRING, currentSpot.index.toString());
+		localStorage.setItem(LOCAL_STORAGE_ID, currentSpot.participant.id);
+	}
+
+	function notify(observer) {
+		observer.participantChange(currentSpot.participant);
 	}
 
 	function onItemClick(event) {
@@ -39,6 +46,7 @@ var ListView = (function () {
 		saveLocalData();
 		$(".itemData:eq(" + index + ")").addClass("active");
 		$(".itemData:eq(" + index + ")").attr("id", "participantChosen");
+		listChangeObservers.forEach(notify);
 		emitter.getSchedule(currentSpot.participant.id);
 	}
 
@@ -83,16 +91,23 @@ var ListView = (function () {
 			$("#name").val("");
 			$('#newParticipantModal').modal('hide');
 			$("#search").val("");
+			userlist = undefined;
 		}
 	}
 
 	function onParticipantDeleted() {
 		$(".alert").slideUp();
 		emitter.removeParticipant(currentSpot.participant.name, currentSpot.participant.id);
+		if (currentSpot.index == userlist.length - 1) {
+			currentSpot = new CurrentSpot(currentSpot.index - 1, userlist[currentSpot.index -1]);
+		} else {
+			currentSpot = new CurrentSpot(currentSpot.index + 1, userlist[currentSpot.index + 1]);
+		}
+		userlist = undefined;
+		emitter.getSchedule(currentSpot.participant.id);
 	}
 
 	function bind() {
-		console.log("BIND");
 		$("div").on("click",".itemData", onItemClick);
 		$("div").on('click', ".editParticipant", onEditModalOpened);
 		$('#newParticipantModal').on('shown.bs.modal', function () {
@@ -125,7 +140,14 @@ var ListView = (function () {
 
 	//figure out a smarter way to do this
 	function update(newUserlist) {
-		console.log("update");
+		if (userlist == undefined && currentSpot == undefined) {
+			id = localStorage.getItem(LOCAL_STORAGE_ID);
+			currentSpot.participant = new Participant(undefined, id);
+			listChangeObservers.forEach(function(observer) {
+				notify(observer);
+			});
+			emitter.getSchedule(id);	
+		}
 		userlist = newUserlist;
 		$(".itemData").remove();
 		var indexSet = false;
@@ -146,16 +168,26 @@ var ListView = (function () {
 				$(".itemData:eq(" + i + ")").append('<a title="Edit Participant" class="editParticipant list-item-inline"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>');
 			}
 		}
+		if (!indexSet) {
+			currentSpot.index = 0;
+			currentSpot.participant = undefined;
+			update(userlist);
+		}
 	}
 
 	function getCurrentParticipant() {
-		return currentSpot;
+		return currentSpot.participant;
+	}
+
+	function addObserver(observer) {
+		listChangeObservers.push(observer);
 	}
 
 	return {
 		init: init,
 		update: update,
-		getCurrentParticipant: getCurrentParticipant
+		getCurrentParticipant: getCurrentParticipant,
+		addObserver: addObserver
 	};
 
 }) ();

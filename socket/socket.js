@@ -40,12 +40,12 @@ module.exports = function(server) {
           socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
         } else {
           max = classroster.maxNumber;
-          ParticipantSchedule.find({day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime, classrosterId:new ObjectId(classEvent.classrosterid)}).count(function(err, count) {
+          ParticipantSchedule.find({day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime, classrosterId:new ObjectId(classEvent.classrosterid)}).count(function(err, count) {
             if (err) {
               socket.emit("errorMessage", "Could not save schedule (bad class?). Try Refreshing Error Message: " + err.errmsg);
             } else {
               if (!max || count < max) {
-                ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(participant.participantid), day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
+                ParticipantSchedule.findOneAndUpdate({participantId:new ObjectId(participant.participantid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, {classrosterId: new ObjectId(classEvent.classrosterid)}, {upsert:true}, function(err) {
                   if (err) {
                     socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
                   }
@@ -64,7 +64,7 @@ module.exports = function(server) {
     //delete a class from a schedule
     socket.on('delete schedule', function(participant) {
       var classEvent = participant.classEvent;
-      ParticipantSchedule.remove({participantId:new ObjectId(participant.participantid), day:getNumberFromDay(classEvent.day), startTime: classEvent.startTime, endTime: classEvent.endTime}, function(err) {
+      ParticipantSchedule.remove({participantId:new ObjectId(participant.participantid), day:classEvent.day, startTime: classEvent.startTime, endTime: classEvent.endTime}, function(err) {
         if (err) {
           socket.emit("errorMessage", "Could not save schedule. Try Refreshing Error Message: " + err.errmsg);
         }
@@ -254,21 +254,6 @@ module.exports = function(server) {
   });
 
   return io; // so it can be used in app.js ( if need be )
-}
-
-//function to transfer numbered days to word days. For different languages if need be
-function getNumberFromDay(day) {
-  if (day.toLowerCase() === "monday") {
-    return 0;
-  } else if (day.toLowerCase() === "tuesday") {
-    return 1;
-  } else if (day.toLowerCase() === "wednesday") {
-    return 2;
-  } else if (day.toLowerCase() === "thursday") {
-    return 3;
-  } else if (day.toLowerCase() === "friday") {
-    return 4;
-  }
 }
 
 //helper functions to send data to all or one user

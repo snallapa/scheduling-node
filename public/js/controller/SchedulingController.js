@@ -18,9 +18,12 @@ var Controller = (function () {
 
 	function newClasses(classList) {
 		model.clearClasses();
-		for (newClass in classList) {
-			model.addClass(new ClassModel(newClass.name, newClass.location, newClass.max));
-		}
+		classList.forEach(function (newClass) {
+			model.addClass(new ClassModel(newClass.name, 
+				newClass.location, 
+				newClass.maxNumber, 
+				newClass._id));
+		});
 		view.updateAutocomplete();
 	}
 
@@ -41,6 +44,10 @@ var Controller = (function () {
 		view.updateSchedule();
 	}
 
+	function scheduleChange(forceUpdate, id) {
+		view.scheduleChange(forceUpdate, id);
+	}
+
 	function init(initModel, initView) {
 		model = initModel;
 		view = initView;
@@ -51,7 +58,8 @@ var Controller = (function () {
 		error: error,
 		newParticipants: newParticipants,
 		newClasses: newClasses,
-		newSchedule: newSchedule
+		newSchedule: newSchedule,
+		scheduleChange: scheduleChange
 	};
 
 }) ();

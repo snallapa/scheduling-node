@@ -68,7 +68,7 @@ $.fn.editableTableWidget = function (options) {
 							e.preventDefault();
 							//e.stopPropagation();
 						} else {
-							setActiveText();
+							//setActiveText();
 							editor.hide();
 							active.focus();
 							e.preventDefault();

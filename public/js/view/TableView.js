@@ -14,6 +14,8 @@ var TableView = (function () {
 		MAX_COLUMNS = maxCol;
 		MAX_ROWS = maxRow;
 		savedSchedule = {};
+		bind();
+		setupTable();
 	}
 
 	function clearSchedule() {
@@ -82,7 +84,7 @@ var TableView = (function () {
 	}
 
 	function onChange(evt, newValue) {
-		saveSchedule($(this), (classEntered === undefined && !newValue));
+		saveSchedule($(this), (newValue.trim() === ""));
 	}
 
 	function setupTable() {
@@ -99,17 +101,20 @@ var TableView = (function () {
 		$('table td').on('change', onChange);
 	}
 
+	function onItemSelected(event, ui) {
+		classEntered = ui.item.actualClass;
+	}
+
 	function setupAutocomplete() {
 		$( "textarea" ).not("#search").autocomplete({
 			source: classList.map(function(roster) {
 				value = roster.name + "\n" + roster.location;
 				label = value + ": " + (!roster.max ? "No Max" : roster.max);
 				return {value: value, label: label, actualClass:roster};
-			}),
-			select: function(event, ui) {
-				classEntered = ui.item.actualClass;
-			}
+			})
 		});
+		$( "textarea" ).not("#search").on("autocompleteselect", onItemSelected);
+		$( "textarea" ).not("#search").on("autocompletefocus", onItemSelected);
 	}
 
 	function updateClasses(newClassList) {
@@ -117,23 +122,30 @@ var TableView = (function () {
 		setupAutocomplete();
 	}
 
-	function saveSchedule(cell, errorClass) {
+	function saveSchedule(cell, deleteClass) {
 		var col = cell.parent().children().index(cell);
 		var row = cell.parent().parent().children().index(cell.parent());
 		var participantId = currentParticipant.id
-		if (errorClass) {
+		var tableRows = $("#schedule").find('tbody').find('tr');
+		var time = $(tableRows[row]).find('td:eq(0)').html();
+		time = time.split("-");
+		time[0] = time[0].trim();
+		time[1] = time[1].trim();
+		if (classEntered === undefined && (!deleteClass)) {
 			$('.addClassWarning').slideDown();
 			return;
 		}
-		if (classEntered === undefined) {
+		if (deleteClass) {
 			var deleteClass = savedSchedule[row + "" + col];
-			classEvent = {day: day, startTime: time[0], endTime:time[1], classrosterid:deleteClass.id};
-			emitter.deleteClass(participantId, classEvent);
+			if (deleteClass) {
+				classEvent = {day: col - 1, startTime: time[0], endTime:time[1], classrosterid:deleteClass.id};
+				emitter.deleteClass(participantId, classEvent);
+			}
 		} else {
-			classEvent = {day: day, startTime: time[0], endTime:time[1],classrosterid:classEntered.id};
+			classEvent = {day: col - 1, startTime: time[0], endTime:time[1],classrosterid:classEntered.id};
 			emitter.saveClass(participantId, classEvent);
-			classEntered = undefined;
 		}
+		classEntered = undefined;
 	}
 
 	function getNumberFromDay(day) {
@@ -171,10 +183,15 @@ var TableView = (function () {
 		}
 	}
 
+	function setCurrentParticipant(participant) {
+		currentParticipant = participant;
+	}
+
 	return {
 		init: init,
 		updateSchedule: updateSchedule,
-		updateClasses: updateClasses
+		updateClasses: updateClasses,
+		setCurrentParticipant: setCurrentParticipant
 	};
 
 }) ();
