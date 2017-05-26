@@ -1,6 +1,7 @@
 var SchedulingView = (function () {
 	var tableView;
 	var listView;
+	var schedulingHelper;
 	var viewModel;
 	var emitter;
 
@@ -9,8 +10,10 @@ var SchedulingView = (function () {
 		listView = initListView;
 		viewModel = initViewModel;
 		emitter = initEmitter;
-		listView.init(emitter);
-		tableView.init(emitter, listView.getCurrentParticipant(), [], 6, 6);
+		SchedulingListViewHelper.init(emitter);
+		schedulingHelper = SchedulingListViewHelper;
+		listView.init(schedulingHelper);
+		tableView.init(emitter, schedulingHelper.getCurrentListItem(), [], 6, 6);
 		$(".alert").hide();
 		$(".alert").slideUp();
 		listView.addObserver(this);
@@ -33,12 +36,14 @@ var SchedulingView = (function () {
 	}
 
 	function scheduleChange(forceUpdate, id) {
-		if (forceUpdate || listView.getCurrentParticipant().id === id) {
+		var currentParticipant = schedulingHelper.getCurrentListItem();
+		if (forceUpdate || (currentParticipant && currentParticipant.id === id)) {
 			emitter.getSchedule(id);
 		}
 	}
 
 	function participantChange(participant) {
+		currentParticipant = participant;
 		tableView.setCurrentParticipant(participant);
 	}
 

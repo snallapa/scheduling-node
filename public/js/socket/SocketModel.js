@@ -13,7 +13,7 @@ var Emitter = (function () {
 		socket.emit("clear schedule", userlist[indexOfList]._id);
 	}
 
-	function addParticpant(name) {
+	function addParticipant(name) {
 		socket.emit('new participant', {name: name});
 	}
 
@@ -41,7 +41,7 @@ var Emitter = (function () {
 		init: init,
 		getSchedule: getSchedule,
 		clearSchedule: clearSchedule,
-		addParticpant: addParticpant,
+		addParticipant: addParticipant,
 		editParticipant: editParticipant,
 		removeParticipant: removeParticipant,
 		newClass: newClass,

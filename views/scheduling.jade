@@ -105,10 +105,10 @@ html
           p
             button.btn.btn-danger.actuallyClearSchedule(type='button') Clear Schedule&nbsp;
             button.btn.btn-default.closeWarning(type='button') Cancel
-        .residentsList
+        .listView
           .list-group-item
             .displayText
-              a.addUserLink(data-toggle='modal', data-target='#newParticipantModal')
+              a.addLink(data-toggle='modal', data-target='#newParticipantModal')
                 span.glyphicon.glyphicon-plus(aria-hidden='true')
               #newParticipantModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='newParticipantLabel', aria-hidden='true')
                 .modal-dialog
@@ -243,6 +243,7 @@ html
     script(src='js/model/ClassModel.js')
     script(src='js/model/ParticipantModel.js')
     script(src='js/model/Model.js')
+    script(src='js/view/SchedulingListViewHelper.js')
     script(src='js/view/ListView.js')
     script(src='js/view/TableView.js')
     script(src='js/view/ViewModel.js')
