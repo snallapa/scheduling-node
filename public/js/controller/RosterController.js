@@ -12,40 +12,42 @@ var Controller = (function () {
 		participantList.forEach(function (user) {
 			model.addParticipant(new Participant(user.name, user._id));
 		});
-		
-		view.updateListView();
-	}
-
-	function newClasses(classList) {
-		model.clearClasses();
-		classList.forEach(function (newClass) {
-			model.addClass(new ClassModel(newClass.name, 
-				newClass.location, 
-				newClass.maxNumber, 
-				newClass._id));
-		});
 		view.updateAutocomplete();
 	}
 
-	function newSchedule(schedule) {
-		model.clearSchedule();
-		schedule.forEach(function (classEvent) {
+	function newParticipantInClass(newParticipants) {
+		model.clearParticipantsInClass();
+		newParticipants.forEach(function (newParticipant) {
+			model.addParticipantInClass(new Participant(newParticipant.participantId.name, 
+				newParticipant.participantId._id));
+		});
+		view.updateSchedule();
+	}
+
+	function newClassesForDay(classForDay) {
+		model.clearClassesForDay();
+		classForDay.forEach(function (classEvent) {
 			classModel = new ClassModel(
 				classEvent.classrosterId.name, 
 				classEvent.classrosterId.location,
 				classEvent.classrosterId.maxNumber,
 				classEvent.classrosterId._id);
-			model.addSchedule(new ClassEvent(classEvent.day, 
+			model.addClassForDay(new ClassEvent(classEvent.day, 
 				classEvent.startTime, 
 				classEvent.endTime, 
 				classModel, 
-				classEvent._id));
+				undefined,
+				classEvent.num));
 		});
-		view.updateSchedule();
+		view.updateListView();
 	}
 
 	function scheduleChange(forceUpdate, id) {
 		view.scheduleChange(forceUpdate, id);
+	}
+
+	function newClasses(classList) {
+
 	}
 
 	function init(initModel, initView) {
@@ -57,9 +59,10 @@ var Controller = (function () {
 		init: init,
 		error: error,
 		newParticipants: newParticipants,
-		newClasses: newClasses,
-		newSchedule: newSchedule,
-		scheduleChange: scheduleChange
+		newParticipantInClass: newParticipantInClass,
+		newClassesForDay: newClassesForDay,
+		scheduleChange: scheduleChange,
+		newClasses: newClasses
 	};
 
 }) ();

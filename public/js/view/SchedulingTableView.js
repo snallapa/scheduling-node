@@ -1,4 +1,4 @@
-var TableView = (function () {
+var SchedulingTableView = (function () {
 	var emitter;
 	var currentParticipant;
 	var classList;

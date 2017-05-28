@@ -10,7 +10,7 @@ var Emitter = (function () {
 	}
 
 	function clearSchedule (id) {
-		socket.emit("clear schedule", userlist[indexOfList]._id);
+		socket.emit("clear schedule", id);
 	}
 
 	function addParticipant(name) {
@@ -37,6 +37,28 @@ var Emitter = (function () {
 		socket.emit('save schedule', {participantid: id, classEvent: classEvent});
 	}
 
+	function getClassesForDay(currentday) {
+		socket.emit('get roster', currentday);
+	}
+
+	function deleteRoster(currentDay, startTime, endTime, classId) {
+		socket.emit('clear roster', {day:currentDay, startTime:startTime, endTime:endTime, classrosterId:classId});
+	}
+
+	function saveRoster(participantId, currentday, startTime, endTime, classId) {
+		var classEvent = {day: currentday, startTime: startTime, endTime:endTime,classrosterid:classId};
+		socket.emit('save roster', {participantid: participantId, classEvent: classEvent});
+	}
+
+	function getParticipantsInClass(currentday, startTime, classId) {
+		socket.emit('get rosterparticipants', {day: currentday, startTime: startTime, classId:classId});
+	}
+
+	function deleteParticipantFromRoster(participantId, currentday, startTime, endTime, classId) {
+		classEvent = {day: currentday, startTime: startTime, endTime:endTime, classrosterid:classId};
+		socket.emit('delete roster', {participantid: participantId, classEvent: classEvent});
+	}
+
 	return {
 		init: init,
 		getSchedule: getSchedule,
@@ -46,7 +68,12 @@ var Emitter = (function () {
 		removeParticipant: removeParticipant,
 		newClass: newClass,
 		deleteClass: deleteClass,
-		saveClass: saveClass
+		saveClass: saveClass,
+		getClassesForDay: getClassesForDay,
+		deleteRoster: deleteRoster,
+		saveRoster: saveRoster,
+		getParticipantsInClass: getParticipantsInClass,
+		deleteParticipantFromRoster: deleteParticipantFromRoster
 	};
 
 }) ();
@@ -84,6 +111,14 @@ var SocketModel = (function () {
 
 		socket.on("participant schedule", function(schedule) {
 			controller.newSchedule(schedule);
+		});
+
+		socket.on('rosterlist', function(rosters) {
+			controller.newClassesForDay(rosters);
+		});
+
+		socket.on('rosterparticipants', function(participants) {
+			controller.newParticipantInClass(participants);
 		});
 	}
 

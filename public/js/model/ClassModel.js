@@ -13,5 +13,16 @@ ClassModel.prototype = {
 			return this.name;
 		}
 
+	},
+	equal : function(otherClass) {
+		return this.name === otherClass.name 
+		&& this.location === otherClass.location
+		&& this.max === otherClass.max;
+	},
+	titleString: function() {
+		return this.name;
+	},
+	subtitleString: function() {
+		return this.startTime + ' - ' + this.endTime;
 	}
 };

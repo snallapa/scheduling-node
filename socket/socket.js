@@ -216,7 +216,7 @@ module.exports = function(server) {
 
     //get the actual class roster
     socket.on('get rosterparticipants', function(roster) {
-      ParticipantSchedule.find({classrosterId: roster.classrosterId._id, startTime: roster.startTime, day: roster.day}).populate('participantId').exec(function (err, rosters) {
+      ParticipantSchedule.find({classrosterId: roster.classId, startTime: roster.startTime, day: roster.day}).populate('participantId').exec(function (err, rosters) {
         if (err) {
           socket.emit("errorMessage", "Could not get rosters. Try Refreshing Error Message: " + err.errmsg);
         }

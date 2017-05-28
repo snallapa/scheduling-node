@@ -143,7 +143,7 @@ var SchedulingListViewHelper = (function () {
 		listChangeObservers.push(observer);
 	}
 
-	function getUserList() {
+	function getList() {
 		return userlist;
 	}
 
@@ -163,7 +163,7 @@ var SchedulingListViewHelper = (function () {
 		onEditClicked: onEditClicked,
 		onRemoveClicked: onRemoveClicked,
 		addObserver: addObserver,
-		getUserList: getUserList,
+		getList: getList,
 		getCurrentListItem: getCurrentListItem,
 		getCurrentIndex: getCurrentIndex,
 		getRemoveTitle: getRemoveTitle,

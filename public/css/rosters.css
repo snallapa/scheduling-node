@@ -88,11 +88,11 @@ td {
 	cursor: pointer;
 }
 
-.itemData:hover{
+.itemData:hover {
 	background-color: #f5f5f5;
 }
 
-.removeRoster {
+.removeAction {
 	float: right;
 	visibility: hidden;
 }
@@ -105,10 +105,10 @@ td {
 	color: white;
 }
 
-.active > .removeRoster {
+.active > .removeAction {
 	visibility: visible;
 }
-.removeRoster { 
+.removeAction { 
 	float: right;
 	position: absolute;
 	bottom: 38%;
@@ -116,7 +116,7 @@ td {
 	vertical-align: middle;
  }
 
-.className .classTime{
+.listHeader .listSubtitle {
 	text-align: center;
 	float: left;
 	margin-bottom: 0px;
