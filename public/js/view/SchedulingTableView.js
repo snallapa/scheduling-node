@@ -79,6 +79,7 @@ var SchedulingTableView = (function () {
 		var col = cell.parent().children().index(cell);
 		var row = cell.parent().parent().children().index(cell.parent());
 		if (col === 0) {
+			classEntered = undefined;
 			return false;
 		} 
 	}

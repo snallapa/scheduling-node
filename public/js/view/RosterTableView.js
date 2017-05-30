@@ -68,14 +68,11 @@ var TableView = (function () {
 	}
 
 	function validate (evt, newValue) {
-		var cell = $(this);
-		var column = cell.index();
-		if (newValue.trim() === "") {
-			nameToDelete = cell.html(); 
+		if (newValue.trim().length > 65) {
+			participantEntered = undefined;
+			return false;
 		}
-		else {
-			return newValue.trim().length < 65;
-		}
+		return true;
 	}
 
 	function change (evt, newValue) {
