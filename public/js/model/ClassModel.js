@@ -14,7 +14,7 @@ ClassModel.prototype = {
 		}
 
 	},
-	equal : function(otherClass) {
+	equal: function(otherClass) {
 		return this.name === otherClass.name 
 		&& this.location === otherClass.location
 		&& this.max === otherClass.max;

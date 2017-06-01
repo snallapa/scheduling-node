@@ -40,11 +40,9 @@ html
               span(aria-hidden='true') ×
             p
               strong Wait!
-              |  The name entered is not a Participant. Would you like to add it?
+              |  The name entered is not a Participant. The Participant needs to be added to be in use
             p
-              button.btn.btn-primary.addParticipant(type='button') Add Participant
-              &nbsp;
-              button.btn.btn-default.closeWarning(type='button') Cancel
+              button.btn.btn-default.closeWarning(type='button') Close
           .alert.alert-danger.alert-dismissible.deleteRosterWarning(role='alert')
             button.close(type='button', data-dismiss='alert', aria-label='Close')
               span(aria-hidden='true') ×
