@@ -93,7 +93,7 @@ html
             |  Are you sure you want to delete this participant? This action cannot be undone (but you can always add
             | 						another one).
           p
-            button.btn.btn-danger.actuallyRemoveResident(type='button') Remove participant
+            button.btn.btn-danger.actuallyRemoveParticipant(type='button') Remove participant
             &nbsp;
             button.btn.btn-default.closeWarning(type='button') Cancel
         .alert.alert-danger.alert-dismissible.clearWarning(role='alert')
@@ -126,7 +126,7 @@ html
                       form
                         .form-group
                           label(for='name') Name
-                          input#name.form-control(type='text', placeholder='Enter Name')
+                          input#name.addName.form-control(type='text', placeholder='Enter Name')
                         br
                         //
                           <div class="form-group">

@@ -29,7 +29,7 @@ var SchedulingListViewHelper = (function () {
 		});
 		$(".editParticipantButton").click(onEditConfirmed);
 		$(".addParticipantButton").click(onNewParticipant);
-		$(".actuallyRemoveResident").click(onParticipantDeleted);
+		$(".actuallyRemoveParticipant").click(onParticipantDeleted);
 
 	}
 
