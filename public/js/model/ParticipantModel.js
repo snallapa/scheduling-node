@@ -11,5 +11,5 @@ Participant.prototype.equal = function (other) {
 	if (other === undefined) {
 		return false;
 	}
-	return this.name === other.name;
+	return this.name === other.name || this.id === other.id;
 };

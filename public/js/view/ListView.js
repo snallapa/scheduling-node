@@ -43,17 +43,32 @@ var ListView = (function () {
 		}
 		helper.setList(list);
 		$(".itemData").remove();
-		var indexSet = false;
+
+		var currentItem = helper.getCurrentListItem();
+		if (currentItem) {
+			var indexSet = false;
+			for (var i = 0;i < list.length; i++) {
+				if (currentItem.equal(list[i])) {
+					helper.updateIndex(i);
+					indexSet = true;
+					break;
+				}
+			}
+			if (!indexSet) {
+				helper.updateIndex(0);
+			}
+		} else {
+			helper.updateIndex(0);
+		}
+
 		for (var i = 0; i < list.length; i++) {
-			if (i === helper.getCurrentIndex() || list[i].equal(helper.getCurrentListItem())) {
-				indexSet = true;
+			if (i === helper.getCurrentIndex()) {
 				$(".list-group").append('<div class="list-group-item active itemData"></div>');
 				if (options.subtitle) {
 					appendSubtitledItem(list[i].titleString(), list[i].subtitleString(), i);
 				} else {
 					appendHeaderItem(list[i].titleString(), i);
 				}
-				helper.updateIndex(i);
 			}
 			else {
 				$(".list-group").append('<div class="list-group-item itemData"></div>');
@@ -63,10 +78,6 @@ var ListView = (function () {
 					appendHeaderItem(list[i].titleString(), i);
 				}
 			}
-		}
-		if (!indexSet) {
-			helper.updateIndex(0);
-			update(list);
 		}
 	}
 

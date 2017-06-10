@@ -3,6 +3,12 @@ var ParticipantSchedule = require('../models/participantschedule');
 var ClassRoster = require('../models/classroster');
 var ObjectId = require('mongoose').Types.ObjectId;
 var io;
+/*
+* Warning this file is a fucking mess because old me was a dumb boi
+* who thought he could just javascript mess his way to victory
+* IT DID NOT WORK
+* I hate looking at this file and you will too so sorry in advance
+*/
 module.exports = function(server) {
   io = require('socket.io')(server);
 
