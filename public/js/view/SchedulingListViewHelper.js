@@ -24,6 +24,7 @@ var SchedulingListViewHelper = (function () {
 		$('#newParticipantModal').on('shown.bs.modal', function () {
 			$('#name').focus();
 		});
+
 		$('#editModal').on('shown.bs.modal', function () {
 			$('#newParticipantName').focus();
 		});
@@ -63,10 +64,12 @@ var SchedulingListViewHelper = (function () {
 
 	function updateIndex(index) {
 		currentSpot.index = index;
-		currentSpot.participant = userlist[index];
-		saveLocalData();
-		listChangeObservers.forEach(notify);
-		emitter.getSchedule(currentSpot.participant.id);
+		currentSpot.participant = userlist[index]
+		if (currentSpot.participant) {
+			saveLocalData();
+			listChangeObservers.forEach(notify);
+			emitter.getSchedule(currentSpot.participant.id);
+		}
 	}
 
 	function onEditClicked(event) {
