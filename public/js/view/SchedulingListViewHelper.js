@@ -64,7 +64,7 @@ var SchedulingListViewHelper = (function () {
 
 	function updateIndex(index) {
 		currentSpot.index = index;
-		currentSpot.participant = userlist[index]
+		currentSpot.participant = userlist[index];
 		if (currentSpot.participant) {
 			saveLocalData();
 			listChangeObservers.forEach(notify);
