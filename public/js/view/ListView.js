@@ -44,6 +44,10 @@ var ListView = (function () {
 		helper.setList(list);
 		$(".itemData").remove();
 
+		if (!list || list.length == 0) {
+			return;
+		}
+
 		var currentItem = helper.getCurrentListItem();
 		if (currentItem) {
 			var indexSet = false;
