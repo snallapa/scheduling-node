@@ -108,8 +108,6 @@ var TableView = (function () {
 		participantEntered = ui.item.actualParticipant;
 	}
 
-
-
 	function saveRosters(cell, deleteRoster) {
 		var col = cell.parent().children().index(cell);
 		var row = cell.parent().parent().children().index(cell.parent());

@@ -33,6 +33,7 @@ var SchedulingView = (function () {
 
 	function error(error) {
 		alert(error);
+		tableView.error();
 	}
 
 	function scheduleChange(forceUpdate, id) {

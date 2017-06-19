@@ -6,6 +6,7 @@ var SchedulingTableView = (function () {
 	var savedSchedule;
 	var MAX_COLUMNS;
 	var MAX_ROWS;
+	var enteredClassLocation;
 
 	function init(initEmitter, initCurrentParticipant, initClassList, maxCol, maxRow) {
 		emitter = initEmitter;
@@ -145,6 +146,7 @@ var SchedulingTableView = (function () {
 		} else {
 			classEvent = {day: col - 1, startTime: time[0], endTime:time[1],classrosterid:classEntered.id};
 			emitter.saveClass(participantId, classEvent);
+			enteredClassLocation = {row: row, col: col};
 		}
 		classEntered = undefined;
 	}
@@ -184,6 +186,18 @@ var SchedulingTableView = (function () {
 		}
 	}
 
+	function error() {
+		var tableRows = $("#schedule").find('tbody').find('tr');
+		var row = enteredClassLocation.row;
+		var col = enteredClassLocation.col;
+		var beforeClass = savedSchedule[row + "" + col];
+		var showableString = ""
+		if (beforeClass) {
+			showableString = beforeClass.classModel.showableString();
+		}
+		$(tableRows[row]).find('td:eq(' + col + ')').html(showableString);
+	}
+
 	function setCurrentParticipant(participant) {
 		currentParticipant = participant;
 	}
@@ -192,7 +206,8 @@ var SchedulingTableView = (function () {
 		init: init,
 		updateSchedule: updateSchedule,
 		updateClasses: updateClasses,
-		setCurrentParticipant: setCurrentParticipant
+		setCurrentParticipant: setCurrentParticipant,
+		error: error
 	};
 
 }) ();
