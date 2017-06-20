@@ -4,6 +4,7 @@ var TableView = (function () {
 	var allParticipantsList;
 	var emitter;
 	var currentClass;
+	var enteredRosterLocation;
 
 	function init(initEmitter) {
 		emitter = initEmitter;
@@ -124,6 +125,7 @@ var TableView = (function () {
 
 		} else {
 			emitter.saveRoster(participantEntered.id, currentClass.day, currentClass.startTime, currentClass.endTime, currentClass.classModel.id);
+			enteredRosterLocation = {row: row, col: col};
 		}
 		participantEntered = undefined;
 	}
@@ -138,11 +140,24 @@ var TableView = (function () {
 		setupAutocomplete(allParticipantsList);
 	}
 
+	function error() {
+		var row = enteredRosterLocation.row;
+		var col = enteredRosterLocation.col;
+		var beforeParticipant = savedParticipants[row + "" + col];
+		var showableString = ""
+		if (beforeParticipant) {
+			showableString = beforeParticipant.name;
+		}
+		var tableRows = $("#rosters").find('tbody').find('tr');
+		$(tableRows[row]).find('td:eq(' + col + ')').html(showableString);
+	}
+
 	return {
 		init: init,
 		updateParticipants: updateParticipants,
 		updateAllParticipants: updateAllParticipants,
-		setCurrentClass: setCurrentClass
+		setCurrentClass: setCurrentClass,
+		error: error
 	}
 
 }) ();

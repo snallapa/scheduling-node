@@ -33,6 +33,7 @@ var RosterView = (function () {
 	}
 
 	function error(error) {
+		tableView.error();
 		alert(error);
 	}
 
