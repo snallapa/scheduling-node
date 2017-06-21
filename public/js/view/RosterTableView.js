@@ -20,7 +20,6 @@ var TableView = (function () {
 		$(".exportSchedule").click(exportRoster);
 	}
 
-
 	function addParticipant() {
 		$('.addParticipantWarning').slideUp();
 		emitter;
@@ -32,6 +31,9 @@ var TableView = (function () {
 	}
 
 	function exportRoster () {
+		if (!currentClass) {
+			return;
+		}
 		var tableElement = $("#rosters").clone();
 		tableElement.find("tfoot").remove();
 		var table = tableElement.html();
@@ -110,6 +112,11 @@ var TableView = (function () {
 	}
 
 	function saveRosters(cell, deleteRoster) {
+		//if we do not have a class do not do anything
+		if (!currentClass) {
+			$("tbody").html("");
+			return;
+		}
 		var col = cell.parent().children().index(cell);
 		var row = cell.parent().parent().children().index(cell.parent());
 		var participant = cell.html();
@@ -132,6 +139,7 @@ var TableView = (function () {
 
 	function setCurrentClass(newClass) {
 		currentClass = newClass;
+		$("tbody").html("");
 	}
 
 
@@ -141,6 +149,9 @@ var TableView = (function () {
 	}
 
 	function error() {
+		if (!enteredRosterLocation) {
+			return;
+		}
 		var row = enteredRosterLocation.row;
 		var col = enteredRosterLocation.col;
 		var beforeParticipant = savedParticipants[row + "" + col];

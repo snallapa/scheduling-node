@@ -25,6 +25,9 @@ var SchedulingTableView = (function () {
 	}
 
 	function exportSchedule() {
+		if (!currentParticipant) {
+			return;
+		}
 		var tableElement = $("#schedule").clone();
 		tableElement.find("tfoot").remove();
 		var table = tableElement.html();
@@ -59,7 +62,9 @@ var SchedulingTableView = (function () {
 		$(".actuallyClearSchedule").click(clearSchedule);
 
 		$(".clearSchedule").click(function () {
-			$(".clearWarning").slideDown();
+			if (currentParticipant) {
+				$(".clearWarning").slideDown();	
+			}
 		});
 
 		$(".exportSchedule").click(exportSchedule);
@@ -125,6 +130,11 @@ var SchedulingTableView = (function () {
 	}
 
 	function saveSchedule(cell, deleteClass) {
+		//if we do not have a current participant do not save anything
+		if (!currentParticipant) {
+			$(".clearable").html("");
+			return;
+		}
 		var col = cell.parent().children().index(cell);
 		var row = cell.parent().parent().children().index(cell.parent());
 		var participantId = currentParticipant.id
@@ -200,6 +210,7 @@ var SchedulingTableView = (function () {
 
 	function setCurrentParticipant(participant) {
 		currentParticipant = participant;
+		$(".clearable").html("");
 	}
 
 	return {

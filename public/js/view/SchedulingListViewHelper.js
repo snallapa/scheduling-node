@@ -63,12 +63,18 @@ var SchedulingListViewHelper = (function () {
 	}
 
 	function updateIndex(index) {
-		currentSpot.index = index;
-		currentSpot.participant = userlist[index];
-		if (currentSpot.participant) {
-			saveLocalData();
+		if (index == -1) {
+			currentSpot.index == -1;
+			currentSpot.participant = undefined;
 			listChangeObservers.forEach(notify);
-			emitter.getSchedule(currentSpot.participant.id);
+		} else {
+			currentSpot.index = index;
+			currentSpot.participant = userlist[index];
+			if (currentSpot.participant) {
+				saveLocalData();
+				listChangeObservers.forEach(notify);
+				emitter.getSchedule(currentSpot.participant.id);
+			}
 		}
 	}
 
@@ -131,7 +137,10 @@ var SchedulingListViewHelper = (function () {
 			currentSpot = new CurrentSpot(currentSpot.index + 1, userlist[currentSpot.index + 1]);
 		}
 		userlist = undefined;
-		emitter.getSchedule(currentSpot.participant.id);
+		if (currentSpot.participant) {
+			emitter.getSchedule(currentSpot.participant.id);	
+		}
+		
 	}
 
 	function getCurrentIndex() {

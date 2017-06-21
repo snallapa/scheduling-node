@@ -1,5 +1,7 @@
 var userclasses;
 var index;
+
+// a devil file that has not been refactored but this page is so simple it works
 $(document).ready( function () {
 	$(".alert").hide();
 	$(".alert").slideUp();
@@ -57,17 +59,17 @@ $(document).ready( function () {
 					&& userclasses[i].location == location.toLowerCase()
 					&& userclasses[i].maxNumber == max) {
 					index = i;
-					break;
-				}
+				break;
 			}
-			socket.emit('edit class', {id:userclasses[index]._id, newName:newName, newLocation: newLocation, newMax: newMax});
-			$("#editNewName").val("");
-			$("#editLocation").val("");
-			$("#editMax").val("");
-			$('#editClassModal').modal('hide');
-			$("#search").val("");
 		}
-	});
+		socket.emit('edit class', {id:userclasses[index]._id, newName:newName, newLocation: newLocation, newMax: newMax});
+		$("#editNewName").val("");
+		$("#editLocation").val("");
+		$("#editMax").val("");
+		$('#editClassModal').modal('hide');
+		$("#search").val("");
+	}
+});
 
 	//add focus on the first field
 	$('#addClassModal').on('shown.bs.modal', function () {
@@ -126,6 +128,16 @@ $(document).ready( function () {
 
 	$(".actuallyClearClasses").click(function () {
 		socket.emit('clear classes');
+		$('#search').val("");
+		$(".alert").slideUp();
+	});
+
+	$(".deleteScheduledClassesButton").click(function () {
+		$(".deleteAllScheduledAlert").slideDown();
+	});
+
+	$(".actuallyClearScheduledClasses").click(function () {
+		socket.emit('clear scheduled classes');
 		$('#search').val("");
 		$(".alert").slideUp();
 	});

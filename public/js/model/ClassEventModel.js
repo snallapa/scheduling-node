@@ -32,7 +32,12 @@ ClassEvent.prototype = {
 		+ maxNumber
 	},
 	titleString: function() {
-		return this.classModel.titleString() + " - " + this.classModel.location;
+		if (this.classModel.location) {
+			return this.classModel.titleString() + " - " + this.classModel.location;
+		} else {
+			return this.classModel.titleString();
+		}
+		
 	},
 	subtitleString: function() {
 		return this.startTime + "-" + this.endTime;

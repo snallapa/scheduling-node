@@ -45,6 +45,7 @@ var ListView = (function () {
 		$(".itemData").remove();
 
 		if (!list || list.length == 0) {
+			helper.updateIndex(-1);
 			return;
 		}
 

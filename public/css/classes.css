@@ -46,7 +46,7 @@ span {
 	width: 25%;
 }
 
-.addClassButtonModal {
+.addClassButtonModal, .deleteClassesButton {
 	margin-right: 2%;
 }
 

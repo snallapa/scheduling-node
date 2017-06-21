@@ -6,6 +6,8 @@ var SchedulingView = (function () {
 	var emitter;
 
 	function init(initTableView, initListView, initViewModel, initEmitter) {
+		$(".alert").hide();
+		$(".alert").slideUp();
 		tableView = initTableView;
 		listView = initListView;
 		viewModel = initViewModel;
@@ -14,8 +16,6 @@ var SchedulingView = (function () {
 		schedulingHelper = SchedulingListViewHelper;
 		listView.init(schedulingHelper);
 		tableView.init(emitter, schedulingHelper.getCurrentListItem(), [], 6, 6);
-		$(".alert").hide();
-		$(".alert").slideUp();
 		listView.addObserver(this);
 	}
 

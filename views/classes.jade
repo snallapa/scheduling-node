@@ -54,6 +54,16 @@ html
               button.btn.btn-danger.actuallyClearClasses(type='button') Clear Classes
               &nbsp;
               button.btn.btn-default.closeWarning(type='button') Cancel
+          .alert.alert-danger.alert-dismissible.deleteAllScheduledAlert(role='alert')
+            button.close(type='button', data-dismiss='alert', aria-label='Close')
+              span(aria-hidden='true') ×
+            p
+              strong Wait!
+              |  Are you sure you want to delete all scheduled classes? This will delete all rosters and schedules, but will leave the classes untouched
+            p
+              button.btn.btn-danger.actuallyClearScheduledClasses(type='button') Clear Classes
+              &nbsp;
+              button.btn.btn-default.closeWarning(type='button') Cancel
           .residentsSchedule
             .headerbar
               form.search
@@ -61,6 +71,7 @@ html
                   input#search.form-control(type='text', name='search', placeholder='Search', data-list='tbody')
               button.btn.btn-primary.addClassButtonModal(type='button' data-toggle='modal', data-target='#addClassModal') Add Class
               button.btn.btn-danger.deleteClassesButton(type='button') Delete Classes
+              button.btn.btn-danger.deleteScheduledClassesButton(type='button') Delete Scheduled Classes
               #addClassModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addClassLabel', aria-hidden='true')
                 .modal-dialog
                   .modal-content

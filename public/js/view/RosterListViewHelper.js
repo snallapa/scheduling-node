@@ -31,13 +31,20 @@ var RosterListViewHelper = (function () {
 	}
 
 	function updateIndex(index) {
-		currentSpot.index = index;
-		currentSpot.currentClass = classList[index];
-		$(".classTitle").html(currentSpot.currentClass.showableString());
-		emitter.getParticipantsInClass(currentSpot.day, 
-			currentSpot.currentClass.startTime, 
-			currentSpot.currentClass.classModel.id);
-		listObservers.forEach(notify);
+		if (index == -1) {
+			currentSpot.index = -1;
+			currentSpot.currentClass = undefined;
+			$(".classTitle").html("");
+			listObservers.forEach(notify);
+		} else {
+			currentSpot.index = index;
+			currentSpot.currentClass = classList[index];
+			$(".classTitle").html(currentSpot.currentClass.showableString());
+			emitter.getParticipantsInClass(currentSpot.day, 
+				currentSpot.currentClass.startTime, 
+				currentSpot.currentClass.classModel.id);
+			listObservers.forEach(notify);
+		}
 	}
 
 	function bind() {

@@ -248,7 +248,6 @@ module.exports = function(server) {
     });
 
     socket.on('clear roster', function(roster) {
-      console.log(roster);
       ParticipantSchedule.remove({day: roster.day, startTime: roster.startTime, endTime: roster.endTime, classrosterId:new ObjectId(roster.classrosterId)}, function(err) {
         if (err) {
           socket.emit("errorMessage", "Could not delete roster. Try Refreshing Error Message: " + err.errmsg);
@@ -256,6 +255,15 @@ module.exports = function(server) {
         emitUpdatedRostersToAll();
         io.emit('schedule change', {Id:undefined, forceUpdate:true});
       });
+    });
+
+    socket.on('clear scheduled classes', function() {
+      ParticipantSchedule.remove({}, function (err) {
+        if (err) {
+          socket.emit("errorMessage", "Could not delete all scheduled classes. Try Refreshing Error Message: " + err.errmsg);
+        }
+        io.emit('schedule change', {Id: undefined, forceUpdate: true});
+      })
     });
   });
 
