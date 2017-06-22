@@ -31,7 +31,10 @@ var SchedulingListViewHelper = (function () {
 		$(".editParticipantButton").click(onEditConfirmed);
 		$(".addParticipantButton").click(onNewParticipant);
 		$(".actuallyRemoveParticipant").click(onParticipantDeleted);
+	}
 
+	function clearSearch() {
+		$("#search").val("");
 	}
 
 	function setupFirstIndex() {
@@ -123,7 +126,7 @@ var SchedulingListViewHelper = (function () {
 			emitter.addParticipant(name);
 			$("#name").val("");
 			$('#newParticipantModal').modal('hide');
-			$("#search").val("");
+			clearSearch();
 			userlist = undefined;
 		}
 	}
@@ -140,7 +143,7 @@ var SchedulingListViewHelper = (function () {
 		if (currentSpot.participant) {
 			emitter.getSchedule(currentSpot.participant.id);	
 		}
-		
+		clearSearch();
 	}
 
 	function getCurrentIndex() {

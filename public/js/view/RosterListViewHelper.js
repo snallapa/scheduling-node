@@ -6,7 +6,7 @@ var RosterListViewHelper = (function () {
 
 	function init(initEmitter) {
 		emitter = initEmitter;
-		currentSpot = new CurrentSpot(0,undefined,0)
+		currentSpot = new CurrentSpot(0, undefined ,0);
 		emitter.getClassesForDay(0);
 		listObservers = [];
 		bind();
@@ -57,6 +57,10 @@ var RosterListViewHelper = (function () {
 		});
 	}
 
+	function clearSearch() {
+		$("#search").val("");
+	}
+
 	function documentEnter(e) {
 		if (e.which == 13) {
 			e.preventDefault();
@@ -90,7 +94,7 @@ var RosterListViewHelper = (function () {
 			$("#location").val("");
 			$("#max").val("");
 			$('#addClassModal').modal('hide');
-			$("#search").val("");
+			clearSearch();
 			$('.addClassWarning').slideUp();
 			emitter.newClass(name, location, max)
 		}
@@ -110,6 +114,7 @@ var RosterListViewHelper = (function () {
 	}
 
 	function removeRoster() {
+		clearSearch();
 		$(".deleteRosterWarning").slideUp();
 		emitter.deleteRoster(currentSpot.day, 
 			currentSpot.currentClass.startTime, 
