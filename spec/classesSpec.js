@@ -63,7 +63,7 @@ describe("classes list", function() {
 		password.sendKeys("test");
 		var signIn = this.driver.findElement(By.className("signinButton"));
 		signIn.click();
-		this.driver.wait(until.elementLocated(By.className('itemData')), 10000);
+		this.driver.wait(until.elementLocated(By.className('container')), 10000);
 		var classLink = this.driver.findElement(By.linkText("Classes"));
 		classLink.click();
 		this.driver.wait(until.elementLocated(By.className("navbar")));

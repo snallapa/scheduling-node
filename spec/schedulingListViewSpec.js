@@ -42,7 +42,7 @@ describe("scheduling list", function() {
 		var signIn = this.driver.findElement(By.className("signinButton"));
 		signIn.click();
 		this.driver.getCurrentUrl();
-		this.driver.wait(until.elementLocated(By.className('itemData')), 10000);
+		this.driver.wait(until.elementLocated(By.className('container')), 10000);
 		jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
 		done();
 

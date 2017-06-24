@@ -43,10 +43,9 @@ html
             span(aria-hidden='true') ×
           p
             strong Wait!
-            |  The class entered is not part of the class list. Would you like to add it?
+            |  The class entered is not part of the class list. Select an option from autocomplete for optimal performance
           p
-            button.btn.btn-primary(type='button' data-toggle='modal', data-target='#addClass') Add Class
-            button.btn.btn-default.closeWarning(type='button') Cancel
+            button.btn.btn-default.closeWarning(type='button') Close
             #addClass.modal.fade(tabindex='-1', role='dialog', aria-labelledby='addClassLabel', aria-hidden='true')
               .modal-dialog
                 .modal-content
