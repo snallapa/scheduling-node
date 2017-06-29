@@ -93,12 +93,13 @@ $(document).ready( function () {
 		var name = $("#name").val().trim();
 		var location = $("#location").val().trim();
 		var max = $("#max").val().trim();
-		if (name === "" || (max != '' && isNaN(parseInt(max)))) {
+		var numMax = parseInt(max)
+		if (name === "" || (max != '' && isNaN(numMax)) || numMax < 0) {
 			$(".classNotAdded").slideDown().delay(3000)
 			.slideUp();
 		} else {
-			max = parseInt(max);
-			socket.emit('new class', {name: name, location : location, max : max});
+			//max = parseInt(max);
+			socket.emit('new class', {name: name, location : location, max : numMax});
 			$("#name").val("");
 			$("#location").val("");
 			$("#max").val("");
