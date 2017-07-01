@@ -7,7 +7,7 @@ html
     link(rel='stylesheet', href='css/jquery-ui.min.css')
     link(rel='stylesheet', href='css/bootstrap.min.css')
     link(rel='stylesheet', href='css/scheduling.css')
-    //link(rel='icon', type='image/ico', href='favicon.ico')
+    // link(rel='icon', type='image/ico', href='favicon.ico')
   body
     nav.navbamr.navbar-inverse.navbar-fixed-top
       .container
@@ -27,11 +27,13 @@ html
             li
               a(href='classes') Classes
             li
-              a.btn.btn-link.signOut(href="/logout") Sign out
+              a.btn.btn-link.signOut(href='/logout') Sign out
         #navbar.navbar-collapse.collapse
         // /.navbar-collapse
     // Main jumbotron for a primary marketing message or call to action
     .container
+      .residentName
+        p
       .residentsScheduling
         .alert.alert-success.alert-dismissible.deleteResident(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -57,7 +59,7 @@ html
                     .alert.alert-danger.alert-dismissible.classNotAdded(role='alert')
                       button.close(type='button', data-dismiss='alert', aria-label='Close')
                         span(aria-hidden='true') ×
-                      strong Oh No!&nbsp;
+                      strong Oh No! 
                       | The roster could not be added. Enter a name for each class
                     form
                       .form-group
@@ -67,7 +69,7 @@ html
                         input#location.form-control(type='text', placeholder='')
                         label(for='max') Max
                         input#max.form-control(type='text', placeholder='')
-                      //br
+                      // br
                       //
                         <div class="form-group">
                         <label for="contactPicture">Resident Contact Picture</label>
@@ -78,7 +80,6 @@ html
                   .modal-footer
                     button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
                     button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
-            
         .alert.alert-danger.alert-dismissible.residentNotDeleted(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') ×
@@ -90,10 +91,9 @@ html
           p
             strong Wait!
             |  Are you sure you want to delete this participant? This action cannot be undone (but you can always add
-            | 						another one).
+            |             						another one).
           p
             button.btn.btn-danger.actuallyRemoveParticipant(type='button') Remove participant
-            &nbsp;
             button.btn.btn-default.closeWarning(type='button') Cancel
         .alert.alert-danger.alert-dismissible.clearWarning(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
@@ -102,7 +102,7 @@ html
             strong Wait!
             |  Are you sure you want to clear this schedule? There is no going back.
           p
-            button.btn.btn-danger.actuallyClearSchedule(type='button') Clear Schedule&nbsp;
+            button.btn.btn-danger.actuallyClearSchedule(type='button') Clear Schedule 
             button.btn.btn-default.closeWarning(type='button') Cancel
         .listView
           .list-group-item
@@ -120,7 +120,7 @@ html
                       .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
                         button.close(type='button', data-dismiss='alert', aria-label='Close')
                           span(aria-hidden='true') ×
-                        strong Oh No!&nbsp;
+                        strong Oh No! 
                         | The participant could not be added. Enter a name for each participant
                       form
                         .form-group
@@ -209,7 +209,7 @@ html
                           .alert.alert-danger.alert-dismissible.residentNotEdited(role='alert')
                             button.close(type='button', data-dismiss='alert', aria-label='Close')
                               span(aria-hidden='true') ×
-                            strong Oh No!&nbsp;
+                            strong Oh No! 
                             | The participant could not be edited. Enter a name for each participant
                           form
                             .form-group
@@ -231,7 +231,6 @@ html
                 th
                 th
                   button.btn.btn-primary.btn-sm.exportSchedule(type='button', data-html2canvas-ignore='true') Export
-
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
     script(src='js/bootstrap.min.js')
     script(src='js/jquery-ui.min.js')

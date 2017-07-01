@@ -16,7 +16,13 @@ table {
 	top: 80px;
 	margin-bottom: 20px
 }
-
+.residentName {
+	font-size: 150%;
+	font-weight: bold;
+	position: absolute;
+	left: 385px;
+	top: 60px;
+}
 .residentsScheduling {
 	width: 92%;
 	height: 95%;
