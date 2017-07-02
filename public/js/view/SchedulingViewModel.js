@@ -1,4 +1,4 @@
-var ViewModel = (function () {
+ViewModel = (function () {
 	var model;
 
 	function init(initModel) {

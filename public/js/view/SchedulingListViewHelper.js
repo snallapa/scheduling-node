@@ -13,7 +13,6 @@ var SchedulingListViewHelper = (function () {
 		bind();
 	}
 
-
 	function CurrentSpot (index, participant) {
 		this.index = index;
 		this.participant = participant;
@@ -38,7 +37,7 @@ var SchedulingListViewHelper = (function () {
 	}
 
 	function setupFirstIndex() {
-		id = localStorage.getItem(LOCAL_STORAGE_ID);
+		var id = localStorage.getItem(LOCAL_STORAGE_ID);
 		currentSpot.participant = new Participant(undefined, id);
 		listChangeObservers.forEach(notify);
 		emitter.getSchedule(id);	
@@ -66,8 +65,8 @@ var SchedulingListViewHelper = (function () {
 	}
 
 	function updateIndex(index) {
-		if (index == -1) {
-			currentSpot.index == -1;
+		if (index === -1) {
+			currentSpot.index = -1;
 			currentSpot.participant = undefined;
 			listChangeObservers.forEach(notify);
 		} else {
@@ -135,7 +134,7 @@ var SchedulingListViewHelper = (function () {
 	function onParticipantDeleted() {
 		$(".alert").slideUp();
 		emitter.removeParticipant(currentSpot.participant.name, currentSpot.participant.id);
-		if (currentSpot.index == userlist.length - 1) {
+		if (currentSpot.index === userlist.length - 1) {
 			currentSpot = new CurrentSpot(currentSpot.index - 1, userlist[currentSpot.index - 1]);
 		} else {
 			currentSpot = new CurrentSpot(currentSpot.index + 1, userlist[currentSpot.index + 1]);
