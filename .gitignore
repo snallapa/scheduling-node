@@ -3,3 +3,5 @@ node_modules/*
 data/*
 npm-debug.log
 data*
+.idea/workspace.xml
+.idea/tasks.xml

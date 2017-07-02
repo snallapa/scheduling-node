@@ -34,14 +34,8 @@ var TableView = (function () {
 		if (!currentClass) {
 			return;
 		}
-		var tableElement = $("#rosters").clone();
-		tableElement.find("tfoot").remove();
-		var table = tableElement.html();
-		var className = $(".classTitle").html();
-		var exportWindow = window.open("export","Export", '');
+		var exportWindow = window.open("exportrosters","exportrosters", '');
 		exportWindow.onload = function() {
-			exportWindow.document.getElementById('header').innerHTML = className;
-			exportWindow.document.getElementById('schedule').innerHTML = table;
 		};
 	}
 
