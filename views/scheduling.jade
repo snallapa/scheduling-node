@@ -28,18 +28,11 @@ html
               a(href='classes') Classes
             li
               a.btn.btn-link.signOut(href='/logout') Sign out
-        #navbar.navbar-collapse.collapse
-        // /.navbar-collapse
     // Main jumbotron for a primary marketing message or call to action
     .container
       .residentName
         p
       .residentsScheduling
-        .alert.alert-success.alert-dismissible.deleteResident(role='alert')
-          button.close(type='button', data-dismiss='alert', aria-label='Close')
-            span(aria-hidden='true') ×
-          strong Success!
-          |  The participant was deleted.
         .alert.alert-warning.alert-dismissible.addClassWarning(role='alert')
           button.close(type='button', data-dismiss='alert', aria-label='Close')
             span(aria-hidden='true') ×
@@ -69,14 +62,6 @@ html
                         input#location.form-control(type='text', placeholder='')
                         label(for='max') Max
                         input#max.form-control(type='text', placeholder='')
-                      // br
-                      //
-                        <div class="form-group">
-                        <label for="contactPicture">Resident Contact Picture</label>
-                        <input type="file" id="contactPicture">
-                        <p class="help-block">Upload a jpg file of the resident.</p>
-                        </div>
-                        <div id="imagePreview"></div>
                   .modal-footer
                     button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
                     button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
