@@ -221,7 +221,7 @@ module.exports = function (server) {
                     socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
                 }
                 emitUpdatedRostersToAll();
-            })
+            });
             ParticipantSchedule.remove({classrosterId: new ObjectId(eventClass.id)}, function (err) {
                 if (err) {
                     socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
