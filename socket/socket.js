@@ -1,6 +1,7 @@
 var Participant = require('../models/participant');
 var ParticipantSchedule = require('../models/participantschedule');
 var ClassRoster = require('../models/classroster');
+var Setting = require('../models/setting');
 var ObjectId = require('mongoose').Types.ObjectId;
 var io;
 /*
@@ -22,8 +23,7 @@ module.exports = function (server) {
         console.log("connection made");
 
         //send userlist when connection is made
-        emitUpdatedUsers(socket);
-        emitUpdatedRosters(socket);
+        firstConnected(socket);
 
         //add a new participant
         socket.on('new participant', function (participant) {
@@ -343,6 +343,7 @@ module.exports = function (server) {
                 io.emit('schedule change', {Id: undefined, forceUpdate: true});
             })
         });
+
     });
 
     return io; // so it can be used in app.js ( if need be )
@@ -368,5 +369,27 @@ function emitUpdatedUsersToAll() {
 function emitUpdatedRostersToAll() {
     ClassRoster.find({}, null, {sort: {nameLower: 1}}, function (err, participants) {
         io.emit('classlist', participants);
+    });
+}
+
+function firstConnected(socket) {
+    Setting.findOne({}, function (err, setting) {
+        if (err) {
+            socket.emit('error', "Settings could not be sent " + err.message);
+        } else if (setting) {
+            socket.emit('settings', setting);
+            emitUpdatedUsers(socket);
+            emitUpdatedRosters(socket);
+        } else {
+            Setting.create({
+                days : ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                startTime: ["9:30", "10:30", "11:30", "12:30", "1:30"],
+                endTime: ["10:30", "11:30", "12:30", "1:30", "2:30"]
+            }, function (err, defaultSettings) {
+                socket.emit('settings', defaultSettings);
+                emitUpdatedUsers(socket);
+                emitUpdatedRosters(socket);
+            });
+        }
     });
 }

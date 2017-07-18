@@ -47,6 +47,16 @@ var SchedulingView = (function () {
 		tableView.setCurrentParticipant(participant);
 	}
 
+	function setSettings(settings) {
+	    console.log("settings set");
+	    var times = [];
+        var numberOfTimes = settings.startTime.length;
+        for (var i = 0; i < numberOfTimes; i++) {
+	        times.push(settings.startTime[i] + " - " + settings.endTime[i]);
+        }
+        tableView.setSettings(settings.days, times, numberOfTimes, settings.days.length);
+    }
+
 	return {
 		init: init,
 		updateListView: updateListView,
@@ -54,7 +64,8 @@ var SchedulingView = (function () {
 		updateSchedule: updateSchedule,
 		scheduleChange: scheduleChange,
 		participantChange:participantChange,
-		error: error
+		error: error,
+		setSettings: setSettings
 	};
 
 }) ();

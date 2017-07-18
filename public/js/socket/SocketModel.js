@@ -120,6 +120,10 @@ var SocketModel = (function () {
 		socket.on('rosterparticipants', function(participants) {
 			controller.newParticipantInClass(participants);
 		});
+
+		socket.on('settings', function (settings) {
+           controller.setSettings(settings);
+        });
 	}
 
 	return {

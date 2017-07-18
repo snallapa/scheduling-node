@@ -47,8 +47,12 @@ var Controller = (function () {
 	}
 
 	function newClasses(classList) {
-
+	    //no op
 	}
+
+	function setSettings() {
+        //no op
+    }
 
 	function init(initModel, initView) {
 		model = initModel;
@@ -62,7 +66,8 @@ var Controller = (function () {
 		newParticipantInClass: newParticipantInClass,
 		newClassesForDay: newClassesForDay,
 		scheduleChange: scheduleChange,
-		newClasses: newClasses
+		newClasses: newClasses,
+		setSettings: setSettings
 	};
 
 }) ();

@@ -56,8 +56,8 @@ $(document).ready( function () {
 			var max = $('#classes tr').eq(index+1).find('td').eq(2).text();
 			for (var i = 0; i < userclasses.length; i++) {
 				if (userclasses[i].nameLower === name.toLowerCase() 
-					&& userclasses[i].location == location.toLowerCase()
-					&& userclasses[i].maxNumber == max) {
+					&& userclasses[i].locationLower === location.toLowerCase()
+					&& userclasses[i].maxNumber === max) {
 					index = i;
 				break;
 			}
