@@ -50,6 +50,10 @@ var Controller = (function () {
 		view.scheduleChange(forceUpdate, id);
 	}
 
+	function setSettings(settings) {
+        view.setSettings(settings);
+    }
+
 	function init(initModel, initView) {
 		model = initModel;
 		view = initView;
@@ -61,7 +65,8 @@ var Controller = (function () {
 		newParticipants: newParticipants,
 		newClasses: newClasses,
 		newSchedule: newSchedule,
-		scheduleChange: scheduleChange
+		scheduleChange: scheduleChange,
+        setSettings: setSettings
 	};
 
 }) ();

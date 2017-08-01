@@ -55,9 +55,22 @@ var Emitter = (function () {
 	}
 
 	function deleteParticipantFromRoster(participantId, currentday, startTime, endTime, classId) {
-		classEvent = {day: currentday, startTime: startTime, endTime:endTime, classrosterid:classId};
+		var classEvent = {day: currentday, startTime: startTime, endTime:endTime, classrosterid:classId};
 		socket.emit('delete roster', {participantid: participantId, classEvent: classEvent});
 	}
+
+	function updateSettings(days, startTime, endTime) {
+	    var newSettings = {days: days, startTime: startTime, endTime: endTime};
+	    socket.emit("change settings", newSettings);
+    }
+
+    function removeTime(row) {
+        socket.emit("remove time", row);
+    }
+
+    function addTime(startTime, endTime) {
+        socket.emit("add time", {startTime: startTime, endTime: endTime});
+    }
 
 	return {
 		init: init,
@@ -73,7 +86,10 @@ var Emitter = (function () {
 		deleteRoster: deleteRoster,
 		saveRoster: saveRoster,
 		getParticipantsInClass: getParticipantsInClass,
-		deleteParticipantFromRoster: deleteParticipantFromRoster
+		deleteParticipantFromRoster: deleteParticipantFromRoster,
+        updateSettings: updateSettings,
+        removeTime: removeTime,
+        addTime: addTime
 	};
 
 }) ();
@@ -120,6 +136,10 @@ var SocketModel = (function () {
 		socket.on('rosterparticipants', function(participants) {
 			controller.newParticipantInClass(participants);
 		});
+
+		socket.on('settings', function (settings) {
+           controller.setSettings(settings);
+        });
 	}
 
 	return {

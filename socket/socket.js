@@ -1,6 +1,7 @@
 var Participant = require('../models/participant');
 var ParticipantSchedule = require('../models/participantschedule');
 var ClassRoster = require('../models/classroster');
+var Setting = require('../models/setting');
 var ObjectId = require('mongoose').Types.ObjectId;
 var io;
 /*
@@ -22,8 +23,7 @@ module.exports = function (server) {
         console.log("connection made");
 
         //send userlist when connection is made
-        emitUpdatedUsers(socket);
-        emitUpdatedRosters(socket);
+        firstConnected(socket);
 
         //add a new participant
         socket.on('new participant', function (participant) {
@@ -345,6 +345,125 @@ module.exports = function (server) {
                 io.emit('schedule change', {Id: undefined, forceUpdate: true});
             })
         });
+
+        socket.on('change settings', function (newSettings) {
+            Setting.findOne({}, function (err, originalSettings) {
+                var dayChanges = newSettings.days.map(function (day, index) {
+                    return {changed: day, original: originalSettings.days[index]};
+                }).filter(function (change) {
+                    return change.changed !== change.original;
+                });
+                var startChanges = newSettings.startTime.map(function (time, index) {
+                    return {changed: time, original: originalSettings.startTime[index]};
+                }).filter(function (change) {
+                    return change.changed !== change.original;
+                });
+                var endChanges = newSettings.endTime.map(function (time, index) {
+                    return {changed: time, original: originalSettings.endTime[index]};
+                }).filter(function (change) {
+                    return change.changed !== change.original;
+                });
+                var totalChanges = startChanges.length + endChanges.length + dayChanges.length;
+                console.log(totalChanges);
+                var counter = 0;
+                if (dayChanges.length > 0) {
+                    for (var i = 0; i < dayChanges.length; i++) {
+                        var currentChange = dayChanges[i];
+                        ParticipantSchedule.update({day: currentChange.original}, {day: currentChange.changed}, {multi: true}, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            counter++;
+                            if (counter === totalChanges) {
+                                originalSettings.days = newSettings.days;
+                                originalSettings.startTime = newSettings.startTime;
+                                originalSettings.endTime = newSettings.endTime;
+                                originalSettings.save(function (err) {
+                                    updateAll(socket);
+                                });
+                            }
+                        });
+                    }
+                }
+                if (startChanges.length > 0) {
+                    for (var i = 0; i < startChanges.length; i++) {
+                        currentChange = startChanges[i];
+                        ParticipantSchedule.update({startTime: currentChange.original}, {startTime: currentChange.changed}, {multi: true}, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            counter++;
+                            if (counter === totalChanges) {
+                                originalSettings.days = newSettings.days;
+                                originalSettings.startTime = newSettings.startTime;
+                                originalSettings.endTime = newSettings.endTime;
+                                originalSettings.save(function (err) {
+                                    updateAll(socket);
+                                });
+                            }
+                        });
+                    }
+                }
+                if (endChanges.length > 0) {
+                    for (var i = 0; i < endChanges.length; i++) {
+                        currentChange = endChanges[i];
+                        console.log(currentChange);
+                        ParticipantSchedule.update({endTime: currentChange.original}, {endTime: currentChange.changed}, {multi: true}, function (err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            counter++;
+                            if (counter === totalChanges) {
+                                originalSettings.days = newSettings.days;
+                                originalSettings.startTime = newSettings.startTime;
+                                originalSettings.endTime = newSettings.endTime;
+                                originalSettings.save(function (err) {
+                                    updateAll(socket);
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        socket.on('remove time', function (row) {
+            Setting.findOne({}, function (err, originalSettings) {
+                ParticipantSchedule.remove({
+                    startTime: originalSettings.startTime[row],
+                    endTime: originalSettings.endTime[row]
+                }, function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    originalSettings.startTime.splice(row, 1);
+                    originalSettings.endTime.splice(row, 1);
+                    originalSettings.save(function (err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        updateAll(socket);
+                    })
+                });
+            });
+        });
+
+        socket.on('add time', function (newTime) {
+            Setting.findOne({}, function (err, originalSettings) {
+                if (err) {
+                    console.log(err);
+                }
+                originalSettings.startTime.push(newTime.startTime);
+                originalSettings.endTime.push(newTime.endTime);
+                originalSettings.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    updateAll(socket);
+                })
+            });
+        });
+
     });
 
     return io; // so it can be used in app.js ( if need be )
@@ -370,5 +489,39 @@ function emitUpdatedUsersToAll() {
 function emitUpdatedRostersToAll() {
     ClassRoster.find({}, null, {sort: {nameLower: 1}}, function (err, participants) {
         io.emit('classlist', participants);
+    });
+}
+
+function firstConnected(socket) {
+    Setting.findOne({}, function (err, setting) {
+        if (err) {
+            socket.emit('error', "Settings could not be sent " + err.message);
+        } else if (setting) {
+            socket.emit('settings', setting);
+            emitUpdatedUsers(socket);
+            emitUpdatedRosters(socket);
+        } else {
+            Setting.create({
+                days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                startTime: ["9:30", "10:30", "11:30", "12:30", "1:30"],
+                endTime: ["10:30", "11:30", "12:30", "1:30", "2:30"]
+            }, function (err, defaultSettings) {
+                socket.emit('settings', defaultSettings);
+                emitUpdatedUsers(socket);
+                emitUpdatedRosters(socket);
+            });
+        }
+    });
+}
+
+function updateAll(socket) {
+    Setting.findOne({}, function (err, setting) {
+        if (err) {
+            socket.emit('error', "Settings could not be sent " + err.message);
+        } else if (setting) {
+            io.emit('settings', setting);
+            emitUpdatedRostersToAll();
+            emitUpdatedUsersToAll();
+        }
     });
 }

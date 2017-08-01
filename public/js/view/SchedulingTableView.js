@@ -16,7 +16,6 @@ var SchedulingTableView = (function () {
         MAX_ROWS = maxRow;
         savedSchedule = {};
         bind();
-        setupTable();
     }
 
     function clearSchedule() {
@@ -53,14 +52,6 @@ var SchedulingTableView = (function () {
     function bind() {
         $(".actuallyClearSchedule").click(clearSchedule);
 
-        $(".clearSchedule").click(function () {
-            if (currentParticipant) {
-                $(".clearWarning").slideDown();
-            }
-        });
-
-        $(".exportSchedule").click(exportSchedule);
-
         $('#addClass').on('shown.bs.modal', function () {
             $('#newName').focus();
         });
@@ -75,15 +66,33 @@ var SchedulingTableView = (function () {
     function validate(evt, newValue) {
         var cell = $(this);
         var col = cell.parent().children().index(cell);
-        var row = cell.parent().parent().children().index(cell.parent());
+        var wellFormed = true;
         if (col === 0) {
-            classEntered = undefined;
-            return false;
+            if (newValue.trim() === '') {
+                wellFormed
+            }
+            else if (newValue.indexOf("-") !== -1) {
+                var times = newValue.split("-");
+                times[0] = times[0].trim();
+                times[1] = times[1].trim();
+                wellFormed = times[0].indexOf(":") !== -1 && times[1].indexOf(":") !== -1;
+
+            } else {
+                wellFormed = false;
+            }
         }
+        return wellFormed;
     }
 
     function onChange(evt, newValue) {
-        saveSchedule($(this), (newValue.trim() === ""));
+        var cell = $(this);
+        var col = cell.parent().children().index(cell);
+        var row = cell.parent().parent().children().index(cell.parent());
+        if (col === 0) {
+            changeSettings(newValue, row);
+        } else if (row < MAX_ROWS) {
+            saveSchedule(cell, (newValue.trim() === ""));
+        }
     }
 
     function setupTable() {
@@ -98,6 +107,27 @@ var SchedulingTableView = (function () {
         $('table td').on('validate', validate);
 
         $('table td').on('change', onChange);
+
+        $(".clearSchedule").click(function () {
+            if (currentParticipant) {
+                $(".clearWarning").slideDown();
+            }
+        });
+
+        $(".exportSchedule").click(exportSchedule);
+
+        $(".addRow").click(addRow);
+    }
+    
+    function addRow() {
+        console.log("here");
+        $("tbody").append("<tr></tr>");
+        var row = $("tbody tr:last");
+        row.append("<td class='times'></td>");
+        for (var j = 0; j < 5; j++) {
+            row.append("<td class='clearable'></td>");
+        }
+        setupTable();
     }
 
     function onItemSelected(event, ui) {
@@ -186,7 +216,7 @@ var SchedulingTableView = (function () {
     function updateSchedule(schedule) {
         var tableRows = $("#schedule").find('tbody').find('tr');
         $('.clearable').html("");
-        for (var i = 1; i < MAX_COLUMNS; i++) {
+        for (var i = 1; i < MAX_COLUMNS + 1; i++) {
             var day = getNumberFromDay($('th:eq(' + i + ')').html().toLowerCase());
             for (var j = 0; j < MAX_ROWS; j++) {
                 var time = $(tableRows[j]).find('td:eq(0)').html();
@@ -221,12 +251,66 @@ var SchedulingTableView = (function () {
         $(".clearable").html("");
     }
 
+    function setSettings(days, times, maxRow, maxCol) {
+        MAX_ROWS = maxRow;
+        MAX_COLUMNS = maxCol;
+        var table = $("#schedule");
+        var footer = $("tfoot");
+        table.html("");
+        table.append("<thead><tr></tr></thead>");
+        var header = $("thead tr");
+        header.append("<th>Time</th>");
+        for (var i = 0; i < days.length; i++) {
+            var currentDay = days[i];
+            header.append("<th>" + currentDay + "</th>")
+        }
+        table.append("<tbody></tbody>");
+        var body = $("tbody");
+        for (var i = 0; i < times.length; i++) {
+            body.append("<tr></tr>");
+            var row = $("table tr:last");
+            var currentTime = times[i];
+            row.append("<td class='times'>" + currentTime + "</td>");
+            for (var j = 0; j < days.length; j++) {
+                row.append("<td class='clearable'></td>");
+            }
+        }
+        table.append(footer);
+        setupTable();
+    }
+    
+    function changeSettings(newValue, row) {
+        var tableRows = $("#schedule").find('tbody').find('tr');
+        if (!newValue.trim()) {
+            emitter.removeTime(row);
+        } else if (row >= MAX_ROWS) {
+            var time = $(tableRows[row]).find('td:eq(0)').html();
+            var times = time.split("-");
+            times[0] = times[0].trim();
+            times[1] = times[1].trim();
+            emitter.addTime(times[0], times[1]);
+        }
+        var startTimes =[], endTimes = [], days;
+        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+        for (var i = 0; i < MAX_ROWS; i++) {
+            var time = $(tableRows[i]).find('td:eq(0)').html();
+            var times = time.split("-");
+            times[0] = times[0].trim();
+            times[1] = times[1].trim();
+            startTimes.push(times[0]);
+            endTimes.push(times[1]);
+        }
+        emitter.updateSettings(days, startTimes, endTimes);
+    }
+
     return {
         init: init,
         updateSchedule: updateSchedule,
         updateClasses: updateClasses,
         setCurrentParticipant: setCurrentParticipant,
-        error: error
+        error: error,
+        setSettings: setSettings
     };
 
 })();

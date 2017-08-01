@@ -11,12 +11,15 @@ var ListView = (function () {
     }
 
     function onItemClick(event) {
+        console.log("here");
         var index = helper.getCurrentIndex();
         $(".itemData:eq(" + index + ")").removeClass("active");
         $(".itemData:eq(" + index + ")").removeAttr('id');
         index = $(this).index();
         helper.updateIndex(index);
         $(".itemData:eq(" + index + ")").addClass("active");
+        //why is this here????
+        event.stopPropagation();
     }
 
     function bind() {
