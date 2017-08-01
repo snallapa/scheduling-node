@@ -72,7 +72,7 @@ var SchedulingListViewHelper = (function () {
 		} else {
 			currentSpot.index = index;
 			currentSpot.participant = userlist[index];
-            $('.residentName').text(currentSpot.participant.name + "'s Schedule");
+            $('.participantName').text(currentSpot.participant.name + "'s Schedule");
 			if (currentSpot.participant) {
 				saveLocalData();
 				listChangeObservers.forEach(notify);

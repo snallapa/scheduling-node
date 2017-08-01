@@ -30,7 +30,7 @@ html
               a.btn.btn-link.signOut(href='/logout') Sign out
     // Main jumbotron for a primary marketing message or call to action
     .container
-      .residentName
+      .participantName
         p
       .residentsScheduling
         .alert.alert-warning.alert-dismissible.addClassWarning(role='alert')
@@ -130,7 +130,9 @@ html
             tfoot.tableFooter
               tr
                 th
-                  button.btn.btn-warning.btn-sm.clearSchedule(type='button', data-html2canvas-ignore='true') Clear Schedule
+                  button.addRow
+                    span.glyphicon.glyphicon-plus(aria-hidden='true')
+                  button.btn.btn-warning.btn-sm.clearSchedule(type='button', data-html2canvas-ignore='true') Clear
                 th.th-fix
                   #editModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='editLabel', aria-hidden='true')
                     .modal-dialog

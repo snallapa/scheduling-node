@@ -48,7 +48,6 @@ var SchedulingView = (function () {
 	}
 
 	function setSettings(settings) {
-	    console.log("settings set");
 	    var times = [];
         var numberOfTimes = settings.startTime.length;
         for (var i = 0; i < numberOfTimes; i++) {

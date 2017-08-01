@@ -1,7 +1,6 @@
 var Controller = (function () {
 	var model;
 	var view;
-	var socket;
 
 	function error(error) {
 		view.error(error);
