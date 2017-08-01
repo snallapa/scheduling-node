@@ -116,8 +116,9 @@ var SchedulingTableView = (function () {
         $("textarea").not("#search").on("autocompletefocus", onItemSelected);
     }
     $(".clearable").click(function(){
-        row = $(this).parent().index();
-        col = $(this).index();
+        var row = $(this).parent().index();
+        var col = $(this).index();
+        console.log("here");
         setupAutocomplete(findClasses(row, col));
     });
 
@@ -125,7 +126,7 @@ var SchedulingTableView = (function () {
         if (row !== -1 && col !== -1) {
             var validClasses = $.grep(classList, function(roster){
                 //col-1 because the editable text area starts at index 1, but the availabilities array starts at 0
-                return (roster.availabilities[row][col-1] !== false);
+                return (roster.availabilities.length === 0 || (roster.availabilities[row][col-1] !== false));
             });
         }
         return validClasses;

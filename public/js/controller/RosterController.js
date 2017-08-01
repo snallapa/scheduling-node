@@ -31,6 +31,7 @@ var Controller = (function () {
 				classEvent.classrosterId.name, 
 				classEvent.classrosterId.location,
 				classEvent.classrosterId.maxNumber,
+				undefined,
 				classEvent.classrosterId._id);
 			model.addClassForDay(new ClassEvent(classEvent.day, 
 				classEvent.startTime, 

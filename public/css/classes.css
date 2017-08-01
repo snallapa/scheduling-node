@@ -28,14 +28,13 @@ table {
 }
 
 .add-button, .edit-button {
-	background-color: #1E90FF;
+	background-color: #4CAF50;
 	padding: 15px 20px;
 	width: 100%;
-
 }
 
-.add-button:active, .edit-button:active {
-	background-color: white;
+.add-button:hover, .edit-button:hover, .add-button.active, .edit-button.active {
+	background-color: #F44336;
 
 }
 
