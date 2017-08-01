@@ -107,8 +107,8 @@ var SchedulingTableView = (function () {
     function setupAutocomplete(classes) {
         $("textarea").not("#search").autocomplete({
             source: classes.map(function (roster) {
-                value = roster.name + "\n" + roster.location;
-                label = value + ": " + (!roster.max ? "No Max" : roster.max);
+                var value = roster.name + "\n" + roster.location;
+                var label = value + ": " + (!roster.max ? "No Max" : roster.max);
                 return {value: value, label: label, actualClass: roster};
             })
         });
@@ -158,11 +158,11 @@ var SchedulingTableView = (function () {
         if (deleteClass) {
             var classToDelete = savedSchedule[row + "" + col];
             if (classToDelete) {
-                classEvent = {day: col - 1, startTime: time[0], endTime: time[1], classrosterid: classToDelete.id};
+                var classEvent = {day: col - 1, startTime: time[0], endTime: time[1], classrosterid: classToDelete.id};
                 emitter.deleteClass(participantId, classEvent);
             }
         } else {
-            classEvent = {day: col - 1, startTime: time[0], endTime: time[1], classrosterid: classEntered.id};
+            var classEvent = {day: col - 1, startTime: time[0], endTime: time[1], classrosterid: classEntered.id};
             emitter.saveClass(participantId, classEvent);
             enteredClassLocation = {row: row, col: col};
         }

@@ -44,7 +44,6 @@ var SchedulingView = (function () {
 	}
 
 	function participantChange(participant) {
-		currentParticipant = participant;
 		tableView.setCurrentParticipant(participant);
 	}
 

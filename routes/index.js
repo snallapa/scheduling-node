@@ -51,7 +51,6 @@ router.get('/classes', function (req, res, next) {
 });
 
 function convertScheduleToCsv(schedule) {
-    var file = "";
     var times = ["9:30 - 10:30", "10:30 - 11:30", "11:30 - 12:00", "12:00 - 12:30", "12:30 - 1:30", "1:30 - 2:30"];
     var startTimes = ["9:30", "10:30", "11:30", "12:00", "12:30", "1:30"];
     var printSchedule = [];

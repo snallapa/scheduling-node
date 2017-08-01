@@ -178,22 +178,16 @@ module.exports = function (server) {
             });
         });
 
-        //add new class
-        socket.on('new class', function (event) {
-            ClassRoster.create({
-                name: event.name,
-                nameLower: event.name.toLowerCase(),
-                location: event.location,
-                locationLower: event.location.toLowerCase(),
-                maxNumber: event.max,
-                availabilities: event.availabilities
-            }, function (err) {
-                if (err) {
-                    socket.emit("errorMessage", "Could not add Class (possible duplicate?). Try Refreshing Error Message: " + err.errmsg);
-                }
-                emitUpdatedRostersToAll();
-            });
-        });
+    //add new class
+    socket.on('new class', function(event) {
+      ClassRoster.create({ name: event.name, nameLower:event.name.toLowerCase(), location: event.location, locationLower: event.location.toLowerCase(), maxNumber: event.max,
+                availabilities: event.availabilities}, function (err) {
+        if (err) {
+          socket.emit("errorMessage", "Could not add Class (possible duplicate?). Try Refreshing Error Message: " + err.errmsg);
+        }
+        emitUpdatedRostersToAll();
+      });
+    });
 
         //return schedule of participant
         socket.on('get schedule', function (participantId) {
@@ -222,7 +216,7 @@ module.exports = function (server) {
                     socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
                 }
                 emitUpdatedRostersToAll();
-            })
+            });
             ParticipantSchedule.remove({classrosterId: new ObjectId(eventClass.id)}, function (err) {
                 if (err) {
                     socket.emit("errorMessage", "Could not remove class. Try Refreshing Error Message: " + err.errmsg);
@@ -232,24 +226,18 @@ module.exports = function (server) {
             });
         });
 
-        //edit a class
-        socket.on('edit class', function (eventClass) {
-            ClassRoster.findByIdAndUpdate(eventClass.id, {
-                name: eventClass.newName,
-                nameLower: eventClass.newName.toLowerCase(),
-                location: eventClass.newLocation,
-                locationLower: eventClass.newLocation.toLowerCase(),
-                maxNumber: eventClass.newMax,
-                availabilities: eventClass.newAvailability
-            }, function (err) {
-                if (err) {
-                    socket.emit("errorMessage", "Could not edit class name. Try Refreshing Error Message: " + err.errmsg);
-                }
-                emitUpdatedUsersToAll();
-                emitUpdatedRostersToAll();
-                io.emit('schedule change', {Id: undefined, forceUpdate: true});
-            });
-        });
+    //edit a class 
+    socket.on('edit class', function(eventClass) {
+      ClassRoster.findByIdAndUpdate(eventClass.id, { name: eventClass.newName, nameLower: eventClass.newName.toLowerCase(), location:eventClass.newLocation, locationLower:eventClass.newLocation.toLowerCase(), maxNumber:eventClass.newMax,
+                availabilities: eventClass.newAvailability}, function (err) {
+        if (err) {
+          socket.emit("errorMessage", "Could not edit class name. Try Refreshing Error Message: " + err.errmsg);
+        }
+        emitUpdatedUsersToAll();
+        emitUpdatedRostersToAll();
+        io.emit('schedule change', {Id:undefined, forceUpdate:true});
+      });
+    });
 
         //get rosters for a day
         socket.on('get roster', function (day) {
