@@ -218,12 +218,8 @@ function addUnavailabilities(arr, tableName) { //assumes arr isn't empty and con
 
          if (arr[row][col-1] === false) { //col-1 because the editable text area starts at index 1, but the arr starts at 0
              $(this).find('label').addClass('active');
-             // $(this).find('button').addClass('button-select');
-             // $(this).find('button').removeClass('button-unselect');
          } else { //** ALSO LOOK INTO THIS there's a delay between when the old buttons disappear and when the appropriate ones show up
              $(this).find('label').removeClass('active');
-             // $(this).find('button').removeClass('button-select');
-            // $(this).find('button').addClass('button-unselect');
          }
     })
 }
@@ -231,8 +227,6 @@ function addUnavailabilities(arr, tableName) { //assumes arr isn't empty and con
 function clearButtons(buttonName) {
     $(buttonName).each(function() {
         $(this).removeClass('active');
-        // $(this).removeClass('button-select');
-        // $(this).addClass('button-unselect');
     })
 }
 
