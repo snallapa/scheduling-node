@@ -25,8 +25,8 @@ var Emitter = (function () {
 		socket.emit('remove participant', {name: name, id:id});
 	}
 
-	function newClass(name, location, max) {
-		socket.emit('new class', {name: name, location : location, max : max});
+	function newClass(name, location, max, availabilities) {
+		socket.emit('new class', {name: name, location : location, max : max, availabilities: availabilities});
 	}
 
 	function deleteClass(id, classEvent) {

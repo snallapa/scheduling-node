@@ -21,7 +21,8 @@ var Controller = (function () {
 		classList.forEach(function (newClass) {
 			model.addClass(new ClassModel(newClass.name, 
 				newClass.location, 
-				newClass.maxNumber, 
+				newClass.maxNumber,
+				newClass.availabilities,
 				newClass._id));
 		});
 		view.updateAutocomplete();
@@ -34,6 +35,7 @@ var Controller = (function () {
 				classEvent.classrosterId.name, 
 				classEvent.classrosterId.location,
 				classEvent.classrosterId.maxNumber,
+				classEvent.classrosterId.availabilities,
 				classEvent.classrosterId._id);
 			model.addSchedule(new ClassEvent(classEvent.day, 
 				classEvent.startTime, 

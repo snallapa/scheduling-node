@@ -9,7 +9,7 @@ td {
 	vertical-align: middle;
 	overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    /*white-space: nowrap;*/
     font-size: 16px;
 }
 
@@ -20,6 +20,32 @@ td {
 table {
 	table-layout: fixed;
 }
+
+.time {
+	word-wrap: break-word;
+	word-break: normal;
+	white-space:normal;
+}
+
+.add-button, .edit-button {
+	background-color: #1E90FF;
+	padding: 15px 20px;
+	width: 100%;
+
+}
+
+.add-button:active, .edit-button:active {
+	background-color: white;
+
+}
+
+/*.button-select {*/
+	/*background-color: white;*/
+/*}*/
+
+/*.button-unselect {*/
+	/*background-color: #1E90FF;*/
+/*}*/
 
 .residentsScheduling {
 	width: 100%;

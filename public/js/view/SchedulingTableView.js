@@ -31,7 +31,7 @@ var SchedulingTableView = (function () {
         window.open("export", "Export", '');
     }
 
-    function addNewClass() {
+    function addNewClass() { //wait so why is this here??
         var name = $("#newName").val().trim();
         var location = $("#location").val().trim();
         var max = $("#max").val().trim();
@@ -104,9 +104,9 @@ var SchedulingTableView = (function () {
         classEntered = ui.item.actualClass;
     }
 
-    function setupAutocomplete() {
+    function setupAutocomplete(classes) {
         $("textarea").not("#search").autocomplete({
-            source: classList.map(function (roster) {
+            source: classes.map(function (roster) {
                 value = roster.name + "\n" + roster.location;
                 label = value + ": " + (!roster.max ? "No Max" : roster.max);
                 return {value: value, label: label, actualClass: roster};
@@ -115,10 +115,25 @@ var SchedulingTableView = (function () {
         $("textarea").not("#search").on("autocompleteselect", onItemSelected);
         $("textarea").not("#search").on("autocompletefocus", onItemSelected);
     }
+    $(".clearable").click(function(){
+        row = $(this).parent().index();
+        col = $(this).index();
+        setupAutocomplete(findClasses(row, col));
+    });
+
+    function findClasses(row, col) {
+        if (row !== -1 && col !== -1) {
+            var validClasses = $.grep(classList, function(roster){
+                //col-1 because the editable text area starts at index 1, but the availabilities array starts at 0
+                return (roster.availabilities[row][col-1] !== false);
+            });
+        }
+        return validClasses;
+    };
 
     function updateClasses(newClassList) {
         classList = newClassList;
-        setupAutocomplete();
+        setupAutocomplete(classList);
     }
 
     function saveSchedule(cell, deleteClass) {

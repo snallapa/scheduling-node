@@ -51,7 +51,6 @@ html
               |  Would you like to delete all participants in this roster?
             p
               button.btn.btn-primary.deleteRoster(type='button') Delete Roster
-              &nbsp;
               button.btn.btn-default.closeWarning(type='button') Cancel
           .residentsList
             .list-group-item
@@ -59,39 +58,39 @@ html
                 a.addUserLink(data-toggle='modal', data-target='#addClassModal')
                   span.glyphicon.glyphicon-plus(aria-hidden='true')
                 #addClassModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='classLabel', aria-hidden='true')
-                    .modal-dialog
-                      .modal-content
-                        .modal-header
-                          button.close(type='button', data-dismiss='modal', aria-label='Close')
+                  .modal-dialog
+                    .modal-content
+                      .modal-header
+                        button.close(type='button', data-dismiss='modal', aria-label='Close')
+                          span(aria-hidden='true') ×
+                        h4#classLabel.modal-title Add a New Class
+                      .modal-body
+                        .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
+                          button.close(type='button', data-dismiss='alert', aria-label='Close')
                             span(aria-hidden='true') ×
-                          h4#classLabel.modal-title Add a New Class
-                        .modal-body
-                          .alert.alert-danger.alert-dismissible.residentNotAdded(role='alert')
-                            button.close(type='button', data-dismiss='alert', aria-label='Close')
-                              span(aria-hidden='true') ×
-                            strong Oh No!&nbsp;
-                            | The class could not be added. Enter a name/number for each field
-                          form
-                            .form-group
-                              label(for='name') Name
-                              input#name.form-control(type='text', placeholder='')
-                              label(for='location') Location
-                              input#location.form-control(type='text', placeholder='')
-                              label(for='max') Max
-                              input#max.form-control(type='text', placeholder='')
-                            br
-                            //
-                              <div class="form-group">
-                              <label for="contactPicture">Resident Contact Picture</label>
-                              <input type="file" id="contactPicture">
-                              <p class="help-block">Upload a jpg file of the resident.</p>
-                              </div>
-                              <div id="imagePreview"></div>
-                        .modal-footer
-                          button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
-                          button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
-                  .form-group.horizontalFix
-                    input#search.form-control(type='text', name='search', placeholder='Search for class roster', data-list='.list-group')
+                          strong Oh No! 
+                          | The class could not be added. Enter a name/number for each field
+                        form
+                          .form-group
+                            label(for='name') Name
+                            input#name.form-control(type='text', placeholder='')
+                            label(for='location') Location
+                            input#location.form-control(type='text', placeholder='')
+                            label(for='max') Max
+                            input#max.form-control(type='text', placeholder='')
+                          br
+                          //
+                            <div class="form-group">
+                            <label for="contactPicture">Resident Contact Picture</label>
+                            <input type="file" id="contactPicture">
+                            <p class="help-block">Upload a jpg file of the resident.</p>
+                            </div>
+                            <div id="imagePreview"></div>
+                      .modal-footer
+                        button.btn.btn-default.clearModalButton(type='button', data-dismiss='modal') Close
+                        button.btn.btn-primary.addClassButton.clearModalButton(type='button') Add Class
+                .form-group.horizontalFix
+                  input#search.form-control(type='text', name='search', placeholder='Search for class roster', data-list='.list-group')
             .list-group
           .residentsSchedule
             ul.nav.nav-tabs
@@ -119,7 +118,6 @@ html
                   button.btn.btn-warning.btn-sm.addRow(type='button') Add Row
                 th
                   button.btn.btn-primary.btn-sm.exportSchedule(type='button') Export
-                  
       //
         Bootstrap core JavaScript==================================================- ->
         <!-- Placed at the end of the document so the pages load faster
@@ -141,4 +139,3 @@ html
     script(src='js/socket/SocketModel.js')
     script(src='js/controller/RosterController.js')
     script(src='js/controller/RosterStart.js')
-

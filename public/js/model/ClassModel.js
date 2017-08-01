@@ -1,7 +1,8 @@
-var ClassModel = function (name, location, max, id) {
+var ClassModel = function (name, location, max, availabilities, id) {
 	this.name = name;
 	this.location = location;
 	this.max = max;
+	this.availabilities = availabilities;
 	this.id = id;
 };
 

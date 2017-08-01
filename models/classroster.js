@@ -7,7 +7,8 @@ var ClassRoster = new Schema({
     description: String,
     location: String,
     locationLower: String,
-    maxNumber: Number
+    maxNumber: Number,
+    availabilities: Array
 });
 
 ClassRoster.index({nameLower: 1, locationLower:1, maxNumber:1}, {unique : true});
