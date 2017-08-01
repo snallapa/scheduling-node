@@ -1,5 +1,6 @@
 var userclasses;
 var index;
+var settings;
 
 // a devil file that has not been refactored but this page is so simple it works
 $(document).ready(function () {
@@ -17,7 +18,11 @@ $(document).ready(function () {
     socket.on('classlist', function (classes) {
         userclasses = classes;
         loadClasses(userclasses);
-    })
+    });
+
+    socket.on('settings', function (initSettings) {
+        settings = initSettings;
+    });
 
     //show warning when the remove is clicked
     $("div").on('click', ".glyphicon-remove", function (event) {
@@ -37,7 +42,7 @@ $(document).ready(function () {
     $('#editClassModal').on('shown.bs.modal', function () {
         $('#editNewName').focus();
         var className = $('#classes tr').eq(index + 1).find('td').eq(0).text();
-        var locationName= $('#classes tr').eq(index + 1).find('td').eq(1).text();
+        var locationName = $('#classes tr').eq(index + 1).find('td').eq(1).text();
         $("#editNewName").val(className);
         $("#editLocation").val(locationName);
         $("#editMax").val($('#classes tr').eq(index + 1).find('td').eq(2).text());
@@ -48,9 +53,24 @@ $(document).ready(function () {
                 var available = userclasses[i].availabilities;
             }
         }
+
+        var body = $(".new-availability");
+        body.html("");
+        var times = [];
+        var numberOfTimes = settings.startTime.length;
+        for (var i = 0; i < numberOfTimes; i++) {
+            times.push(settings.startTime[i] + " - " + settings.endTime[i]);
+        }
+        for (var i = 0; i < times.length; i++) {
+            body.append("<tr class='new-time'></tr>");
+            var row = $(".new-availability tr:last");
+            var currentTime = times[i];
+            row.append("<td>" + currentTime + "</td>");
+            for (var j = 0; j < settings.days.length; j++) {
+                row.append("<td data-toggle='buttons' class='new-schedule'> <label class='add-button btn btn-primary btn-lg btn-block'> <input type='checkbox' autocomplete='off'/> </label> </td>");
+            }
+        }
         addUnavailabilities(available, '.new-time .new-schedule');
-
-
     });
 
     //send message to server when we want to save
@@ -95,6 +115,23 @@ $(document).ready(function () {
     //add focus on the first field
     $('#addClassModal').on('shown.bs.modal', function () {
         $('#name').focus();
+
+        var body = $(".availability");
+        body.html("");
+        var times = [];
+        var numberOfTimes = settings.startTime.length;
+        for (var i = 0; i < numberOfTimes; i++) {
+            times.push(settings.startTime[i] + " - " + settings.endTime[i]);
+        }
+        for (var i = 0; i < times.length; i++) {
+            body.append("<tr class='time'></tr>");
+            var row = $(".availability tr:last");
+            var currentTime = times[i];
+            row.append("<td>" + currentTime + "</td>");
+            for (var j = 0; j < settings.days.length; j++) {
+                row.append("<td data-toggle='buttons' class='schedule'> <label class='add-button btn btn-primary btn-lg btn-block'> <input type='checkbox' autocomplete='off'/> </label> </td>");
+            }
+        }
     });
 
     //account for enter button
@@ -179,18 +216,6 @@ function loadClasses(classes) {
 
 }
 
-// $(".add-button, .edit-button").click(function () {
-//     var color = $(this).css('background-color'); //color is a string
-//     if (color === 'rgb(255, 255, 255)') { //if color is white or if it's selected as an "unavailable" time
-//         $(this).addClass('button-unselect'); //unselect the class so it's an available time
-//         $(this).removeClass('button-select');
-//     } else {
-//         $(this).addClass('button-select');
-//         $(this).removeClass('button-unselect');
-//     }
-//
-// });
-
 function getAvailabilities(tableName) {
     var available = []
     $(tableName).each(function () {
@@ -212,20 +237,20 @@ function getAvailabilities(tableName) {
 }
 
 function addUnavailabilities(arr, tableName) { //assumes arr isn't empty and contains a 2D array
-    $(tableName).each(function() {
-         row = $(this).parent().index();
-         col = $(this).index();
+    $(tableName).each(function () {
+        row = $(this).parent().index();
+        col = $(this).index();
 
-         if (arr[row][col-1] === false) { //col-1 because the editable text area starts at index 1, but the arr starts at 0
-             $(this).find('label').addClass('active');
-         } else { //** ALSO LOOK INTO THIS there's a delay between when the old buttons disappear and when the appropriate ones show up
-             $(this).find('label').removeClass('active');
-         }
+        if (arr[row][col - 1] === false) { //col-1 because the editable text area starts at index 1, but the arr starts at 0
+            $(this).find('label').addClass('active');
+        } else { //** ALSO LOOK INTO THIS there's a delay between when the old buttons disappear and when the appropriate ones show up
+            $(this).find('label').removeClass('active');
+        }
     })
 }
 
 function clearButtons(buttonName) {
-    $(buttonName).each(function() {
+    $(buttonName).each(function () {
         $(this).removeClass('active');
     })
 }

@@ -117,6 +117,14 @@ var SchedulingTableView = (function () {
         $(".exportSchedule").click(exportSchedule);
 
         $(".addRow").click(addRow);
+
+        $(".clearable").click(filterClasses);
+    }
+
+    function filterClasses(){
+        var row = $(this).parent().index();
+        var col = $(this).index();
+        setupAutocomplete(findClasses(row, col));
     }
     
     function addRow() {
@@ -145,12 +153,6 @@ var SchedulingTableView = (function () {
         $("textarea").not("#search").on("autocompleteselect", onItemSelected);
         $("textarea").not("#search").on("autocompletefocus", onItemSelected);
     }
-    $(".clearable").click(function(){
-        var row = $(this).parent().index();
-        var col = $(this).index();
-        console.log("here");
-        setupAutocomplete(findClasses(row, col));
-    });
 
     function findClasses(row, col) {
         if (row !== -1 && col !== -1) {
@@ -160,7 +162,7 @@ var SchedulingTableView = (function () {
             });
         }
         return validClasses;
-    };
+    }
 
     function updateClasses(newClassList) {
         classList = newClassList;
