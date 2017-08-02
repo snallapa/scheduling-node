@@ -257,27 +257,26 @@ var SchedulingTableView = (function () {
         MAX_ROWS = maxRow;
         MAX_COLUMNS = maxCol;
         var table = $("#schedule");
-        var footer = $("tfoot");
-        table.html("");
-        table.append("<thead><tr></tr></thead>");
-        var header = $("thead tr");
-        header.append("<th>Time</th>");
+        var header = $("#schedule thead");
+        var body = $("#schedule tbody");
+        header.html("");
+        body.html("");
+        header.append("<tr></tr>");
+        var headerRow = $("thead tr");
+        headerRow.append("<th>Time</th>");
         for (var i = 0; i < days.length; i++) {
             var currentDay = days[i];
-            header.append("<th>" + currentDay + "</th>")
+            headerRow.append("<th>" + currentDay + "</th>")
         }
-        table.append("<tbody></tbody>");
-        var body = $("tbody");
         for (var i = 0; i < times.length; i++) {
             body.append("<tr></tr>");
-            var row = $("table tr:last");
+            var row = $("tbody tr:last");
             var currentTime = times[i];
             row.append("<td class='times'>" + currentTime + "</td>");
             for (var j = 0; j < days.length; j++) {
                 row.append("<td class='clearable'></td>");
             }
         }
-        table.append(footer);
         setupTable();
     }
     
