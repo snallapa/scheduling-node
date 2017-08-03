@@ -61,6 +61,16 @@ var SchedulingTableView = (function () {
         });
 
         $(".addClassButton").click();
+
+        $(".addRow").click(addRow);
+
+        $(".clearSchedule").click(function () {
+            if (currentParticipant) {
+                $(".clearWarning").slideDown();
+            }
+        });
+
+        $(".exportSchedule").click(exportSchedule);
     }
 
     function validate(evt, newValue) {
@@ -69,7 +79,7 @@ var SchedulingTableView = (function () {
         var wellFormed = true;
         if (col === 0) {
             if (newValue.trim() === '') {
-                wellFormed
+                wellFormed = true;
             }
             else if (newValue.indexOf("-") !== -1) {
                 var times = newValue.split("-");
@@ -107,16 +117,6 @@ var SchedulingTableView = (function () {
         $('table td').on('validate', validate);
 
         $('table td').on('change', onChange);
-
-        $(".clearSchedule").click(function () {
-            if (currentParticipant) {
-                $(".clearWarning").slideDown();
-            }
-        });
-
-        $(".exportSchedule").click(exportSchedule);
-
-        $(".addRow").click(addRow);
 
         $(".clearable").click(filterClasses);
     }

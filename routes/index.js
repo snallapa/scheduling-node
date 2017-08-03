@@ -1,6 +1,7 @@
 var express = require('express');
 var passport = require('passport');
 var Participant = require('../models/participant');
+var Settings = require('../models/setting');
 var ParticipantSchedule = require('../models/participantschedule')
 var socket = require('socket.io');
 var router = express.Router();
@@ -50,9 +51,11 @@ router.get('/classes', function (req, res, next) {
     }
 });
 
-function convertScheduleToCsv(schedule) {
-    var times = ["9:30 - 10:30", "10:30 - 11:30", "11:30 - 12:00", "12:00 - 12:30", "12:30 - 1:30", "1:30 - 2:30"];
-    var startTimes = ["9:30", "10:30", "11:30", "12:00", "12:30", "1:30"];
+function convertScheduleToCsv(schedule, startTimes, endTimes) {
+    var times = [];
+    for (var i = 0; i < startTimes.length; i++) {
+        times.push(startTimes[i] + " - " + endTimes[i]);
+    }
     var printSchedule = [];
     for (var row = 0; row < times.length; row++) {
         var newRow = [];
@@ -62,7 +65,9 @@ function convertScheduleToCsv(schedule) {
         }
         printSchedule.push(newRow);
     }
+    console.log(printSchedule);
     for (var i = 0; i < schedule.length; i++) {
+        console.log(schedule[i]);
         printSchedule[startTimes.indexOf(schedule[i].startTime)][schedule[i].day + 1] = schedule[i].classrosterId.name;
     }
     var csv = "Times, Monday, Tuesday, Wednesday, Thursday, Friday\n";
@@ -75,22 +80,26 @@ function convertScheduleToCsv(schedule) {
 
 router.get('/export', function (req, res, next) {
     if (req.user) {
-        Participant.find({}, function (err, participants) {
-            var zip = new JSZip();
-            var counter = 0;
-            participants.forEach(function (participant) {
-                ParticipantSchedule.find({participantId: new ObjectId(participant._id)}).populate('classrosterId').exec(function (err, schedule) {
-                    var csv = convertScheduleToCsv(schedule);
-                    zip.file(participant.name + ".csv", csv);
-                    counter++;
-                    if (counter === participants.length) {
-                        zip
-                            .generateNodeStream({type: 'nodebuffer', streamFiles: true})
-                            .pipe(res);
-                    }
+        Settings.findOne({}, function (err, settings) {
+            Participant.find({}, function (err, participants) {
+                var zip = new JSZip();
+                var counter = 0;
+                participants.forEach(function (participant) {
+                    ParticipantSchedule.find({participantId: new ObjectId(participant._id)}).populate('classrosterId').exec(function (err, schedule) {
+                        console.log(settings);
+                        var csv = convertScheduleToCsv(schedule, settings.startTime, settings.endTime);
+                        zip.file(participant.name + ".csv", csv);
+                        counter++;
+                        if (counter === participants.length) {
+                            zip
+                                .generateNodeStream({type: 'nodebuffer', streamFiles: true})
+                                .pipe(res);
+                        }
+                    });
                 });
             });
         });
+
     } else {
         res.redirect('/');
     }
@@ -110,6 +119,14 @@ function convertRosterToCsv(roster, participants) {
         csv += "\n\nCapped at " + roster.classrosterId.maxNumber + " people";
     }
     return csv;
+}
+
+function rosterFileName(roster) {
+    var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    return [roster.classrosterId.name,
+        days[roster.day],
+        roster.startTime + " - " + roster.endTime,
+        roster.classrosterId.location].join(" ");
 }
 
 router.get('/exportrosters', function (req, res, next) {
@@ -149,7 +166,7 @@ router.get('/exportrosters', function (req, res, next) {
                         day: roster.day
                     }).populate('participantId').exec(function (err, participants) {
                         var csv = convertRosterToCsv(roster, participants);
-                        zip.file(roster.classrosterId.name + counter + ".csv", csv);
+                        zip.file(rosterFileName(roster) + ".csv", csv);
                         counter++;
                         if (counter === rosters.length) {
                             zip
