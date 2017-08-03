@@ -11,7 +11,6 @@ var ListView = (function () {
     }
 
     function onItemClick(event) {
-        console.log("here");
         var index = helper.getCurrentIndex();
         $(".itemData:eq(" + index + ")").removeClass("active");
         $(".itemData:eq(" + index + ")").removeAttr('id');
