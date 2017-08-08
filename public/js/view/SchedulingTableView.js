@@ -290,19 +290,20 @@ var SchedulingTableView = (function () {
             times[0] = times[0].trim();
             times[1] = times[1].trim();
             emitter.addTime(times[0], times[1]);
-        }
-        var startTimes =[], endTimes = [], days;
-        days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+        } else {
+            var startTimes =[], endTimes = [], days;
+            days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-        for (var i = 0; i < MAX_ROWS; i++) {
-            var time = $(tableRows[i]).find('td:eq(0)').html();
-            var times = time.split("-");
-            times[0] = times[0].trim();
-            times[1] = times[1].trim();
-            startTimes.push(times[0]);
-            endTimes.push(times[1]);
+            for (var i = 0; i < MAX_ROWS; i++) {
+                var time = $(tableRows[i]).find('td:eq(0)').html();
+                var times = time.split("-");
+                times[0] = times[0].trim();
+                times[1] = times[1].trim();
+                startTimes.push(times[0]);
+                endTimes.push(times[1]);
+            }
+            emitter.updateSettings(days, startTimes, endTimes);
         }
-        emitter.updateSettings(days, startTimes, endTimes);
     }
 
     return {
